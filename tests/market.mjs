@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import { normalizeSymbol,parseChart,parseNews,safeSourceUrl,fetchMarket } from '../lib/market.ts';
+const now=new Date('2026-10-02T01:00:00Z');const stamp=Date.parse('2026-10-01T13:30:00Z')/1000;
+assert.equal(normalizeSymbol(' shop.to '),'SHOP.TO');
+assert.throws(()=>normalizeSymbol('../../secret'));assert.equal(safeSourceUrl('javascript:alert(1)'),null);
+const raw={chart:{result:[{meta:{symbol:'AAPL',longName:'Apple Inc.',currency:'USD',regularMarketTime:stamp},timestamp:[stamp-86400,stamp],indicators:{quote:[{close:[100,105]}]}}]}};
+assert.ok(Math.abs(parseChart(raw,'AAPL',now).changePercent-5)<1e-9);
+assert.throws(()=>parseChart(raw,'MSFT',now));
+const invalid=structuredClone(raw);invalid.chart.result[0].indicators.quote[0].close=[0,null];assert.throws(()=>parseChart(invalid,'AAPL',now));
+const article={title:'Test headline',link:'https://finance.yahoo.com/news/test',publisher:'Test publisher',providerPublishTime:stamp,relatedTickers:['AAPL']};
+assert.equal(parseNews({news:[article,article,{...article,link:'https://x.test/other',relatedTickers:['MSFT']},{...article,link:'https://x.test/future',providerPublishTime:stamp+86400},{...article,link:'javascript:bad'}]},'AAPL',now).length,1);
+assert.equal(parseNews({news:[{...article,providerPublishTime:stamp-10*86400}]},'AAPL',now).length,0);
+await assert.rejects(fetchMarket('AAPL',async()=>new Response('unavailable',{status:429})),/No sample data/);
+console.log('Passed: ticker validation, price math, mismatched identity, invalid prices, news relevance, timestamps, deduplication, unsafe URLs, provider failures.');

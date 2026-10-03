@@ -8,7 +8,7 @@ export const marketCache=sqliteTable('market_cache',{
  symbol:text('symbol').primaryKey(),payload:text('payload').notNull(),fetchedAt:text('fetched_at').notNull(),
 });
 export const analyses=sqliteTable('analyses',{
- id:text('id').primaryKey(),userId:text('user_id').notNull(),symbol:text('symbol').notNull(),kind:text('kind').notNull(),question:text('question').notNull(),answer:text('answer').notNull(),contextHash:text('context_hash').notNull(),market:text('market').notNull(),model:text('model').notNull(),usage:text('usage').notNull(),createdAt:text('created_at').notNull(),
+ id:text('id').primaryKey(),userId:text('user_id').notNull(),symbol:text('symbol').notNull(),kind:text('kind').notNull(),question:text('question').notNull(),answer:text('answer').notNull(),contextHash:text('context_hash').notNull(),market:text('market').notNull(),model:text('model').notNull(),usage:text('usage').notNull(),research:text('research'),createdAt:text('created_at').notNull(),
 });
 export const savedNotes=sqliteTable('saved_notes',{
  id:text('id').primaryKey(),userId:text('user_id').notNull(),symbol:text('symbol').notNull(),text:text('text').notNull(),createdAt:text('created_at').notNull(),

@@ -15,6 +15,13 @@
       "when": 1790906515339,
       "tag": "0001_cheerful_robbie_robertson",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1791008352607,
+      "tag": "0002_many_brood",
+      "breakpoints": true
     }
   ]
 }

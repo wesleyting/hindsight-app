@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import { searchEvidence,gatherResearch,addEvidence,newResearch,compareStocks } from '../lib/investigation.ts';
+const mock=async()=>Response.json({results:[{url:'https://reddit.com/r/stocks/comments/123/topic',title:'Discussion',content:'excerpt'},{url:'https://reddit.com/r/stocks/',content:'listing'},{url:'javascript:bad',raw_content:'unsafe'},{url:'https://other.com/report',raw_content:'not reddit'}]});
+const sources=await searchEvidence('test','AAPL',true,mock);assert.equal(sources.length,1);assert.equal(sources[0].coverage,'search excerpt');assert.equal(sources[0].publishedAt,null);
+const bundle=newResearch();addEvidence(bundle,sources);addEvidence(bundle,sources);assert.equal(bundle.sources.length,1);assert.equal(bundle.sources[0].id,'S1');
+const missing=await gatherResearch({company:'Apple',symbol:'AAPL'});assert.equal(missing.sources.length,0);assert.match(missing.gaps[0],/not configured/);
+const failed=await gatherResearch({company:'Apple',symbol:'AAPL'},'test',async()=>new Response('secret',{status:401}));assert.ok(failed.gaps.some(g=>g.includes('Article search failed')));assert.ok(!JSON.stringify(failed).includes('secret'));
+const today=new Date();today.setUTCHours(0,0,0,0);const d=days=>new Date(today.getTime()-days*86400000).toISOString().slice(0,10);const ts=days=>Date.parse(d(days)+'T14:30:00Z')/1000;
+const chart=currency=>async url=>{const symbol=url.includes('/AAPL?')?'AAPL':'MSFT';return Response.json({chart:{result:[{meta:{symbol,currency:symbol==='AAPL'?'USD':currency},timestamp:[ts(5),ts(4),ts(3),ts(0)],indicators:{adjclose:[{adjclose:symbol==='AAPL'?[100,110,120,999]:[null,200,220,999]}]}}]}});};
+const comparison=await compareStocks('AAPL','MSFT',d(6),chart('USD'));assert.equal(comparison.start,d(4));assert.equal(comparison.end,d(3));assert.ok(Math.abs(comparison.returnPercent-9.090909)<0.0001);assert.ok(Math.abs(comparison.alternativeReturnPercent-10)<0.0001);
+await assert.rejects(compareStocks('AAPL','MSFT',d(6),chart('CAD')),/same currency/);await assert.rejects(compareStocks('AAPL','AAPL',d(6)),/different/);await assert.rejects(compareStocks('AAPL','MSFT','2099-01-01'),/past start date/);
+console.log('Passed: source filtering/deduplication, missing coverage, provider failure, matched dates, adjusted return math, incomplete-session exclusion, currency/date validation.');

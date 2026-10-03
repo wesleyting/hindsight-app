@@ -14,8 +14,8 @@ export async function marketFor(symbol:string,refresh=false){
  await db.prepare('INSERT INTO market_cache(symbol,payload,fetched_at) VALUES(?,?,?) ON CONFLICT(symbol) DO UPDATE SET payload=excluded.payload,fetched_at=excluded.fetched_at').bind(symbol,JSON.stringify(market),market.fetchedAt).run();
  return {market,cached:false};
 }
-export type AnalysisRow={id:string;symbol:string;kind:'catchup'|'question';question:string;answer:string;created_at:string;model:string;market:string;usage:string};
-export function analysisFromRow(row:AnalysisRow):SavedAnalysis{return {id:row.id,symbol:row.symbol,kind:row.kind,question:row.question,answer:row.answer,createdAt:row.created_at,model:row.model,market:JSON.parse(row.market),usage:JSON.parse(row.usage)};}
+export type AnalysisRow={id:string;symbol:string;kind:'catchup'|'question';question:string;answer:string;created_at:string;model:string;market:string;usage:string;research?:string|null};
+export function analysisFromRow(row:AnalysisRow):SavedAnalysis{return {id:row.id,symbol:row.symbol,kind:row.kind,question:row.question,answer:row.answer,createdAt:row.created_at,model:row.model,market:JSON.parse(row.market),usage:JSON.parse(row.usage),research:row.research?JSON.parse(row.research):null};}
 export async function historyFor(userId:string,symbol:string){
  const rows=await database().prepare('SELECT * FROM analyses WHERE user_id=? AND symbol=? ORDER BY created_at DESC LIMIT 30').bind(userId,symbol).all<AnalysisRow>();
  return rows.results.map(analysisFromRow);

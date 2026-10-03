@@ -1,3 +1,6 @@
 # Copy to .dev.vars, add your key locally, then restart the dev server.
 DEEPSEEK_API_KEY=""
 DEEPSEEK_MODEL="deepseek-flash"
+
+# Optional article and public Reddit research
+TAVILY_API_KEY=

@@ -1,6 +1,6 @@
 # Hindsight handoff
 
-Updated October 1, 2026. Workspace: `C:/Users/wesle/Desktop/Github/hindsight-app`.
+Updated October 2, 2026. Workspace: `C:/Users/wesle/Desktop/Github/hindsight-app`.
 
 ## Product
 
@@ -10,16 +10,16 @@ Hindsight is a quick “what did I miss?” stock catch-up for an ordinary owner
 
 The user chose DeepSeek and requested real data, saved context, token savings and a GitHub change summary. They clarified this is **local and ready for GitHub**, not a hosted deployment. They entered their API key in `.dev.vars.example`; it was safely moved into ignored `.dev.vars`, and the template was cleared. Never print or commit the key.
 
-The active UI now uses real ticker input, Yahoo Finance recent daily prices and headlines, and DeepSeek catch-ups/follow-ups. No fictional stocks are displayed. The live connection succeeded for AAPL. Sources are headlines only, not full articles. Yahoo's unofficial endpoints initially rejected the worker's default request; an honest Hindsight User-Agent resolved the live check. Failure/staleness remains explicit.
+The active UI now uses real ticker input, Yahoo Finance recent daily prices and headlines, and DeepSeek catch-ups/follow-ups. No fictional stocks are displayed. The live connection succeeded for AAPL. Yahoo sources remain headlines only; Tavily now adds article text/search excerpts and public Reddit thread samples. The user provided a Tavily key, saved only in ignored .dev.vars. Never echo either key. Yahoo's unofficial endpoints initially rejected the worker's default request; an honest Hindsight User-Agent resolved the live check. Failure/staleness remains explicit.
 
 ## Storage and API behavior
 
 - D1 tables: market_cache, analyses, saved_notes, ai_usage, ai_locks; existing reflections retained.
-- Migration `0001_cheerful_robbie_robertson.sql` is applied locally. Never replay blindly.
+- Migrations `0001_cheerful_robbie_robertson.sql` and `0002_many_brood.sql` are applied locally. 0002 adds nullable analyses.research; old answers remain compatible. Never replay blindly.
 - Answers persist with sources/model/token usage/date. Previous catch-up and two recent follow-ups form bounded context.
 - Up to eight notes of 600 characters each per user/stock. Editable answer excerpt saving and Markdown export.
 - Market cache 15 minutes; identical catch-up cache six hours; no background AI calls.
-- Atomic 30 AI attempts/account/UTC day and one in-flight call/account; 45-second provider timeout and 1,200 output-token cap.
+- Atomic 30 AI attempts/account/UTC day and one in-flight cycle/account (eight-minute lease). Up to three model calls/cycle, each 90 seconds and 2,400 output tokens. Quota counts every model-call reservation, including format repairs. Two initial Tavily searches plus up to two extra searches and one comparison.
 - The model instructions live in `lib/deepseek.ts`; no runtime Markdown prompt file is needed.
 - Local state is in ignored `.wrangler/state`; it is not backed up by pushing GitHub source.
 
@@ -30,7 +30,8 @@ The active UI now uses real ticker input, Yahoo Finance recent daily prices and 
 - app/api/chat/route.ts: DeepSeek, cache, quota, persistence.
 - app/api/notes/route.ts and app/api/research/export/route.ts: selected memory and export.
 - lib/market.ts: Yahoo adapter and validation.
-- lib/deepseek.ts: versioned instruction prompt and provider validation.
+- lib/deepseek.ts: bounded tool cycle, short JSON briefs/prepared questions, provider validation and correction.
+- lib/investigation.ts: Tavily source gathering, deduplication, coverage and deterministic matched-date adjusted-price comparison.
 - lib/research-store.ts: D1 data access.
 - README.md: setup, privacy, costs, data limits and verification commands.
 - CHANGE_SUMMARY.md: GitHub-ready summary and commit suggestion.
@@ -39,7 +40,7 @@ The active UI now uses real ticker input, Yahoo Finance recent daily prices and 
 
 Real AAPL prices/headlines and one generated catch-up were verified. Reopening and cache reuse worked without another AI call. Note persistence, export, unauthenticated rejection, origin checks and provider mocks passed. Final test results are recorded in CHANGE_SUMMARY.md.
 
-No dedicated article extraction/search, Reddit, filing collection, brokerage integration or hosted deployment. Headline coverage can be incomplete and incidental. A proper licensed source is a later improvement. The original fixture module and reflection API are legacy and not used by the active real-data experience.
+Tavily search/extracted text and sampled public Reddit are connected; no exhaustive Reddit coverage, filing collection, brokerage integration, scheduled monitoring or hosted deployment. Headline coverage can be incomplete and incidental. A proper licensed source is a later improvement. The original fixture module and reflection API are legacy and not used by the active real-data experience.
 
 ## Running
 
@@ -48,3 +49,9 @@ Node is at `C:/Program Files/nodejs/node.exe`. `node scripts/run-framework.mjs d
 ## Hosting
 
 Existing private Sites project ID: `appgprj_6abdca11feb48191bde67ee50faa9296`. Never register a duplicate. No deployment or verified hosted URL exists. User currently wants to push to GitHub themselves.
+
+## Product changes in this pass
+
+User disliked headline lists and asked for an investigator that saves them research time. The UI now keeps stock-specific prepared answers collapsed, exposes retrieved evidence on demand, offers alternative-stock/date comparisons and dated optional thoughts. Previous AI opinions are not treated as facts. Later returns are not treated as proof of earlier decision quality. Follow-up source reuse lasts an hour; repeated identical catch-ups still reuse a six-hour cache. No paid calls simply from opening the app.
+
+Tavily search queries are model-generated public-company topics; instructions prohibit private notes/amounts in queries. Up to 12 sources of 3,500 characters each are stored alongside the answer. Individual source snippets can be inspected in the UI. DeepSeek may misread sources, and citations alone do not verify a claim.

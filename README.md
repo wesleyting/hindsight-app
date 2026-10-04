@@ -95,3 +95,9 @@ A catch-up first retrieves recent reports and sampled public Reddit text. DeepSe
 Saved thoughts are included when you next ask for a catch-up or question. There is no scheduled weekly monitoring or unsolicited notification yet. Opening the app does not run paid research automatically. Prior answers remain dated and unchanged.
 
 For an existing local database without the new column, inspect `PRAGMA table_info(analyses)` and apply `drizzle/0002_many_brood.sql` only if `research` is absent, using the same Wrangler command above with the new filename.
+
+## October 3 simplification
+
+The current UI replaces the growing chat with a single selected-answer panel. Prepared questions say “View answer” and open saved content without an API call; a new question explicitly starts research. History and sources open separately. The input stays sticky, price movement is shown as numbers and a sparkline, and stock shortcuts sit below an empty search field. Excerpt saving, the notes quota counter and the dedicated comparison form were removed. Existing notes are preserved and manageable in history; comparison is still available through a question.
+
+Catch-up instructions now aim for 60–100 words without narrating the price chart. Word count and headline-count style rules no longer discard otherwise usable answers. Optional malformed suggestions are omitted rather than failing the whole catch-up. Unknown citations in the main answer still fail validation. Research permits two tool rounds and up to four model calls total, allowing a final formatting repair after research; 3,200 output tokens per call. The daily 30-call limit still applies. This supersedes earlier UI and three-call limit descriptions above.

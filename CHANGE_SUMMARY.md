@@ -40,3 +40,11 @@ Add bounded personal notes, Markdown export, cached catch-ups, and AI quotas.
 Yahoo access is unofficial and headline-only, with no guarantee of full coverage or availability. Quotes can be delayed/intraday; returns are not total returns. DeepSeek can still misinterpret sources; citations do not guarantee factual correctness. No Reddit/filings/full-article search or hosted deployment. Account-scoped request caps limit attempts rather than exact currency spend. Export includes up to 30 recent analyses per stock. The local sign-in is simulated and must not be used as public authentication.
 
 No commit or push has been performed. Review the diff in GitHub Desktop or your Git client, then use the suggested message above.
+
+## October 3 simplification
+
+The current UI replaces the growing chat with a single selected-answer panel. Prepared questions say “View answer” and open saved content without an API call; a new question explicitly starts research. History and sources open separately. The input stays sticky, price movement is shown as numbers and a sparkline, and stock shortcuts sit below an empty search field. Excerpt saving, the notes quota counter and the dedicated comparison form were removed. Existing notes are preserved and manageable in history; comparison is still available through a question.
+
+Catch-up instructions now aim for 60–100 words without narrating the price chart. Word count and headline-count style rules no longer discard otherwise usable answers. Optional malformed suggestions are omitted rather than failing the whole catch-up. Unknown citations in the main answer still fail validation. Research permits two tool rounds and up to four model calls total, allowing a final formatting repair after research; 3,200 output tokens per call. The daily 30-call limit still applies. This supersedes earlier UI and three-call limit descriptions above.
+
+Validated this simplification: TypeScript and production build passed; DeepSeek regression tests passed; live AAPL and TE catch-ups saved successfully; AAPL identical catch-up cache reuse passed. Browser verification confirmed prepared-answer replacement and closing without accumulating a chat feed. Suggested commit: `fix: simplify research workspace and make catch-up validation resilient`.

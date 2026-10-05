@@ -1,5 +1,15 @@
 # Hindsight handoff
 
+## Current behavior — October 4
+
+- Catch-ups provide a complete, plain-language takeaway and an optional future-risk sentence, stored in `research.brief`. No line-clamping or ellipses. “More detail” expands the full answer in the same section. Legacy answers remain readable in full until updated.
+- Prepared topics use short labels such as “Funding risk” or “Biggest weaknesses”, with an explanation backed by retrieved article text. Missing/unsupported topics are omitted. No filler Reddit or self-evaluation suggestions. “Look deeper · new research” starts a targeted search and replaces the selected answer.
+- Reddit and social-media retrieval are disabled. Tavily excludes those domains and returned results are filtered again. Result titles must identify the company/ticker, reducing unrelated-company matches. This is a relevance check, not factual verification.
+- Research version 2 prevents earlier Reddit-containing evidence or assessments from being reused as current context. Old records remain in history. No database migration is required; the existing research JSON stores the new brief.
+- Risk wording distinguishes possible future dilution from actual share issuance and never assumes either caused a price move. Citations alone do not establish causation or correctness.
+
+Earlier dated sections below describe the implementation history; these points supersede their Reddit and summary-display behavior.
+
 Updated October 2, 2026. Workspace: `C:/Users/wesle/Desktop/Github/hindsight-app`.
 
 ## Product

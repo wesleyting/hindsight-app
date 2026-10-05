@@ -1,8 +1,13 @@
 import assert from 'node:assert/strict';
-import { searchEvidence,gatherResearch,addEvidence,newResearch,compareStocks } from '../lib/investigation.ts';
+import { searchEvidence,gatherResearch,addEvidence,newResearch,compareStocks,matchesCompany } from '../lib/investigation.ts';
 const mock=async()=>Response.json({results:[{url:'https://reddit.com/r/stocks/comments/123/topic',title:'Discussion',content:'excerpt'},{url:'https://reddit.com/r/stocks/',content:'listing'},{url:'javascript:bad',raw_content:'unsafe'},{url:'https://other.com/report',raw_content:'not reddit'}]});
-const sources=await searchEvidence('test','AAPL',true,mock);assert.equal(sources.length,1);assert.equal(sources[0].coverage,'search excerpt');assert.equal(sources[0].publishedAt,null);
+assert.equal((await searchEvidence('test','AAPL',true,async()=>{assert.fail('Reddit must not be fetched');})).length,0);
+const sources=await searchEvidence('test','Apple',false,async()=>Response.json({results:[{url:'https://example.com/apple',title:'Apple Inc. funding',raw_content:'Apple announcement'},{url:'https://reddit.com/r/other/comments/a/thread',title:'Apple Inc. funding',raw_content:'text'},{url:'https://example.com/other',title:'Other company funding',content:'Apple mentioned in navigation'}]}),{company:'Apple Inc.',symbol:'AAPL'});
+assert.equal(sources.length,1);assert.equal(sources[0].coverage,'extracted text');assert.equal(sources[0].publishedAt,null);
 const bundle=newResearch();addEvidence(bundle,sources);addEvidence(bundle,sources);assert.equal(bundle.sources.length,1);assert.equal(bundle.sources[0].id,'S1');
+assert.equal(matchesCompany('T1 Energy raises funding',{company:'T1 Energy Inc.',symbol:'TE'}),true);
+assert.equal(matchesCompany('Technip Energies raises funding',{company:'T1 Energy Inc.',symbol:'TE'}),false);
+assert.equal(matchesCompany('Update on (TE)',{company:'T1 Energy Inc.',symbol:'TE'}),true);
 const missing=await gatherResearch({company:'Apple',symbol:'AAPL'});assert.equal(missing.sources.length,0);assert.match(missing.gaps[0],/not configured/);
 const failed=await gatherResearch({company:'Apple',symbol:'AAPL'},'test',async()=>new Response('secret',{status:401}));assert.ok(failed.gaps.some(g=>g.includes('Article search failed')));assert.ok(!JSON.stringify(failed).includes('secret'));
 const today=new Date();today.setUTCHours(0,0,0,0);const d=days=>new Date(today.getTime()-days*86400000).toISOString().slice(0,10);const ts=days=>Date.parse(d(days)+'T14:30:00Z')/1000;

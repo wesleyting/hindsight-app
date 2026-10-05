@@ -14,10 +14,10 @@ for(const status of [401,402,429,500])await assert.rejects(answerWithDeepSeek({.
 for(const payload of [{choices:[{finish_reason:'length',message:{content:'partial'}}]},finish(''),finish('Invented source [S99]'),{choices:[{finish_reason:'stop',message:{content:'not json'}}]}])await assert.rejects(answerWithDeepSeek({...options,context:context(),fetcher:async()=>Response.json(payload)}));
 let calls=0,reserved=0;
 const researched=await answerWithDeepSeek({...options,context:context(),tavilyKey:'test-only',reserveCall:async()=>{reserved++;},fetcher:async(url,init)=>{
- if(url.includes('tavily'))return Response.json({results:[{title:'Actual report',url:'https://example.com/report',raw_content:'Evidence here.'}]});
+ if(url.includes('tavily'))return Response.json({results:[{title:'Apple Inc. report',url:'https://example.com/report',raw_content:'Evidence here.'}]});
  calls++;
  if(calls===1)return Response.json({choices:[{finish_reason:'tool_calls',message:{content:null,tool_calls:[{id:'tool1',type:'function',function:{name:'search_more',arguments:JSON.stringify({query:'contrary evidence',reddit:false})}}]}}],usage:{prompt_tokens:50}});
- const body=JSON.parse(init.body);assert.ok(body.messages.some(m=>m.role==='tool'&&m.content.includes('S1')));return Response.json(finish('Evidence supports a view. [S1]',[{question:'What could change it?',answer:'An unresolved alternative. [S1]'}]));
+ const body=JSON.parse(init.body);assert.ok(body.messages.some(m=>m.role==='tool'&&m.content.includes('S1')));return Response.json(finish('Evidence supports a view. [S1]',[{question:'Next milestone',answer:'An unresolved alternative. [S1]'}]));
 }});
 assert.equal(reserved,2);assert.equal(researched.usage.inputTokens,150);assert.equal(researched.research.sources.length,1);assert.equal(researched.research.prepared.length,1);
 await assert.rejects(answerWithDeepSeek({...options,context:context(),reserveCall:async()=>{throw new Error('quota');},fetcher:async()=>{assert.fail('must not call provider');}}),/quota/);
@@ -38,3 +38,16 @@ const repaired=await answerWithDeepSeek({...options,context:context(),tavilyKey:
 }});
 assert.equal(rounds,4);assert.equal(repairsReserved,4);assert.match(repaired.answer,/complete answer/);
 console.log('Passed: long valid answers survive, invalid optional suggestions are omitted, and two tool rounds leave room for final-format repair.');
+
+const briefContext=context();briefContext.research.sources.push({id:'S1',title:'Apple announcement',kind:'report',coverage:'extracted text',text:'Company disclosure',url:'https://example.com/a'});
+const concise=await answerWithDeepSeek({...options,context:briefContext,fetcher:async()=>Response.json({choices:[{finish_reason:'stop',message:{content:JSON.stringify({answer:'Details [S1]',brief:{takeaway:'Funding supports the factory. [S1]',risk:'More shares could reduce existing stakes. [S1]'},prepared:[{question:'Funding risk',answer:'Debt could become shares. [S1]'},{question:'Reddit sentiment',answer:'No evidence [S1]'},{question:'Unsupported topic',answer:'No source.'}]})}}]})});
+assert.equal(concise.research.brief.takeaway,'Funding supports the factory. [S1]');assert.equal(concise.research.prepared.length,1);assert.equal(concise.research.prepared[0].question,'Funding risk');
+console.log('Passed: structured takeaway/risk and evidence-backed topic filtering without Reddit suggestions.');
+
+let missingBriefCalls=0;
+const restored=await answerWithDeepSeek({...options,context:structuredClone(briefContext),kind:'catchup',fetcher:async()=>{missingBriefCalls++;return Response.json({choices:[{finish_reason:'stop',message:{content:JSON.stringify({answer:'Complete details [S1]',prepared:[],...(missingBriefCalls>1?{brief:{takeaway:'Funding supports construction. [S1]'}}:{})})}}]});}});
+assert.equal(missingBriefCalls,2);assert.ok(restored.research.brief);
+console.log('Passed: omitted brief is repaired within the existing model budget.');
+
+await answerWithDeepSeek({...options,context:context(),investigate:true,tavilyKey:'test',fetcher:async(url,init)=>{assert.equal(JSON.parse(init.body).tool_choice.function.name,'search_more');return Response.json(finish());}});
+console.log('Passed: Look deeper explicitly requests a fresh research tool call.');

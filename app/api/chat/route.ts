@@ -6,7 +6,7 @@ import { normalizeSymbol } from '@/lib/market';
 import { answerWithDeepSeek,PROMPT_VERSION } from '@/lib/deepseek';
 import { database,marketFor,historyFor,notesFor,hashContext,json,validOrigin,analysisFromRow,type AnalysisRow } from '@/lib/research-store';
 export const dynamic='force-dynamic';
-const input=z.object({symbol:z.string().max(20),kind:z.enum(['catchup','question']),question:z.string().trim().max(1500).optional(),fetchedAt:z.string().datetime()}).strict();
+const input=z.object({deeper:z.boolean().optional(),symbol:z.string().max(20),kind:z.enum(['catchup','question']),question:z.string().trim().max(1500).optional(),fetchedAt:z.string().datetime()}).strict();
 export async function GET(){return json({provider:'deepseek',configured:Boolean(env.DEEPSEEK_API_KEY?.trim()),researchConfigured:Boolean(env.TAVILY_API_KEY?.trim()),dataMode:'real',dailyLimit:30});}
 export async function POST(request:Request){
  const user=await getChatGPTUser();if(!user)return json({error:'Sign in to ask DeepSeek.'},401);
@@ -44,13 +44,13 @@ export async function POST(request:Request){
   await reserveCall(); // Reserve before starting paid retrieval too.
   let firstCall=true;
   const tavilyKey=env.TAVILY_API_KEY?.trim();
-  const reusable=kind==='question'?history.find(a=>a.research?.version===1&&Date.now()-Date.parse(a.research.searchedAt)<3600_000):undefined;
+  const reusable=kind==='question'?history.find(a=>a.research?.version===2&&Date.now()-Date.parse(a.research.searchedAt)<3600_000):undefined;
   const research=reusable?.research?structuredClone(reusable.research):await gatherResearch(market,tavilyKey);
   research.prepared=[];research.comparisons=[];
-  const previous=history.find(a=>a.kind==='catchup');
+  const previous=history.find(a=>a.kind==='catchup'&&a.research?.version===2);
   const context={market,research,previousAnalysis:previous?{createdAt:previous.createdAt,answer:previous.answer.replace(/\[[A-Za-z][A-Za-z0-9_]*\]/g,'').slice(0,1800)}:null,notes:notes.map(n=>({text:n.text,createdAt:n.createdAt}))};
-  const recent=kind==='question'?history.filter(a=>a.kind==='question').slice(0,2).reverse().flatMap(a=>[{role:'user' as const,content:a.question},{role:'assistant' as const,content:a.answer.slice(0,2000)}]):[];
-  const result=await answerWithDeepSeek({apiKey,model,context,tavilyKey,kind,reserveCall:async()=>{if(firstCall){firstCall=false;return;}await reserveCall();},messages:[...recent,{role:'user',content:question}]});
+  const recent=kind==='question'?history.filter(a=>a.kind==='question'&&a.research?.version===2).slice(0,2).reverse().flatMap(a=>[{role:'user' as const,content:a.question},{role:'assistant' as const,content:a.answer.slice(0,2000)}]):[];
+  const result=await answerWithDeepSeek({apiKey,model,context,tavilyKey,kind,investigate:value.data.deeper,reserveCall:async()=>{if(firstCall){firstCall=false;return;}await reserveCall();},messages:[...recent,{role:'user',content:question}]});
   const analysis={id:crypto.randomUUID(),symbol,kind,question,answer:result.answer,createdAt:new Date().toISOString(),model,market,usage:result.usage,research:result.research};
   await db.prepare('INSERT INTO analyses(id,user_id,symbol,kind,question,answer,context_hash,market,model,usage,created_at,research) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').bind(analysis.id,user.userId,symbol,kind,question,result.answer,hash,JSON.stringify(market),model,JSON.stringify(result.usage),analysis.createdAt,JSON.stringify(result.research)).run();
   return json({analysis,cached:false});

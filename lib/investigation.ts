@@ -1,10 +1,11 @@
 import { normalizeSymbol, safeSourceUrl, type MarketSnapshot } from './market.ts';
 export type EvidenceSource={id:string;title:string;url:string;text:string;coverage:'extracted text'|'search excerpt';kind:'report'|'reddit';publishedAt:string|null;retrievedAt:string};
 export type Comparison={id:string;symbol:string;alternative:string;requestedStart:string;start:string;end:string;currency:string;returnPercent:number;alternativeReturnPercent:number;differencePoints:number;source:string;alternativeSource:string;limitations:string};
-export type ResearchBundle={version:number;sources:EvidenceSource[];gaps:string[];comparisons:Comparison[];prepared:{question:string;answer:string}[];searchedAt:string;searches:number};
-export function newResearch():ResearchBundle{return {version:1,sources:[],gaps:[],comparisons:[],prepared:[],searchedAt:new Date().toISOString(),searches:0};}
-export async function searchEvidence(key:string,query:string,reddit=false,fetcher:typeof fetch=fetch):Promise<EvidenceSource[]>{
- const response=await fetcher('https://api.tavily.com/search',{method:'POST',headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'},signal:AbortSignal.timeout(20_000),body:JSON.stringify({query:query.slice(0,350),search_depth:'advanced',topic:'general',time_range:'week',max_results:3,include_raw_content:'text',include_answer:false,...(reddit?{include_domains:['reddit.com']}:{})})});
+export type ResearchBundle={version:number;sources:EvidenceSource[];gaps:string[];comparisons:Comparison[];brief?:{takeaway:string;risk?:string};prepared:{question:string;answer:string}[];searchedAt:string;searches:number};
+export function newResearch():ResearchBundle{return {version:2,sources:[],gaps:[],comparisons:[],prepared:[],searchedAt:new Date().toISOString(),searches:0};}
+export async function searchEvidence(key:string,query:string,reddit=false,fetcher:typeof fetch=fetch,identity?:{company:string;symbol:string}):Promise<EvidenceSource[]>{
+ if(reddit)return []; // Disabled until thread identity and comment coverage can be verified.
+ const response=await fetcher('https://api.tavily.com/search',{method:'POST',headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'},signal:AbortSignal.timeout(20_000),body:JSON.stringify({query:query.slice(0,350),search_depth:'advanced',topic:'general',time_range:'week',max_results:3,include_raw_content:'text',include_answer:false,exclude_domains:['reddit.com','facebook.com','x.com','twitter.com','stocktwits.com']})});
  if(!response.ok)throw new Error('Research search unavailable. Check Tavily configuration or credit.');
  const body=await response.json() as {results?:{title?:string;url?:string;content?:string;raw_content?:string;published_date?:string}[]};
  if(!Array.isArray(body.results))throw new Error('Research search returned no usable source list.');
@@ -12,12 +13,21 @@ export async function searchEvidence(key:string,query:string,reddit=false,fetche
  return body.results.slice(0,3).flatMap(r=>{
   const url=safeSourceUrl(r.url);if(!url||seen.has(url))return [];
   const host=new URL(url).hostname;const isReddit=host==='reddit.com'||host.endsWith('.reddit.com');
-  if(reddit&&(!isReddit||!new URL(url).pathname.includes('/comments/')))return [];
+  if(isReddit||['facebook.com','x.com','twitter.com','stocktwits.com'].some(domain=>host===domain||host.endsWith('.'+domain)))return [];
+  if(identity&&!matchesCompany(String(r.title??''),identity))return [];
   const raw=typeof r.raw_content==='string'?r.raw_content.trim():'';const excerpt=typeof r.content==='string'?r.content.trim():'';
   if(!raw&&!excerpt)return [];seen.add(url);
   const published=Date.parse(r.published_date??'');
   return [{id:'',title:String(r.title??host).slice(0,250),url,text:raw?boundedPassages(raw,excerpt,query):excerpt.slice(0,3500),coverage:raw?'extracted text' as const:'search excerpt' as const,kind:isReddit?'reddit' as const:'report' as const,publishedAt:Number.isFinite(published)&&published<=Date.now()?new Date(published).toISOString():null,retrievedAt:now}];
  });
+}
+// Require company identity in the result title, not a sidebar or unrelated thread excerpt.
+export function matchesCompany(title:string,identity:{company:string;symbol:string}){
+ const name=identity.company.replace(/\b(incorporated|inc|corporation|corp|limited|ltd|plc)\b\.?/gi,'').replace(/[^a-z0-9 ]/gi,' ').replace(/\s+/g,' ').trim().toLowerCase();
+ const normalized=title.replace(/[^a-z0-9 ]/gi,' ').replace(/\s+/g,' ').toLowerCase();
+ if(name.length>=3&&(' '+normalized+' ').includes(' '+name+' '))return true;
+ const escaped=identity.symbol.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+ return new RegExp(identity.symbol.length>=3?`\\b${escaped}\\b`:`(?:\\$${escaped}\\b|\\(${escaped}\\))`).test(title);
 }
 // Keep the provider's relevant excerpt plus nearby article passages, not pages of navigation.
 export function boundedPassages(raw:string,excerpt:string,query:string){
@@ -31,11 +41,11 @@ export async function gatherResearch(market:MarketSnapshot,key?:string,fetcher:t
  const bundle=newResearch();
  if(!key){bundle.gaps.push('Tavily is not configured; only Yahoo headlines are available. No article or Reddit investigation was performed.');return bundle;}
  const query=`${market.company} (${market.symbol})`;
- const results=await Promise.allSettled([searchEvidence(key,`${query} stock recent developments earnings company announcement reasons share price changed`,false,fetcher),searchEvidence(key,`${query} stock discussion bull bear concerns`,true,fetcher)]);
+ const results=await Promise.allSettled([searchEvidence(key,`${query} recent company announcement financing earnings`,false,fetcher,market),searchEvidence(key,`${query} investor relations financial results risks`,false,fetcher,market)]);
  bundle.searches=2;
- results.forEach((result,i)=>{if(result.status==='fulfilled')addEvidence(bundle,result.value);else bundle.gaps.push(i?'Public Reddit search failed.':'Article search failed. Check Tavily configuration or credit.');});
- if(!bundle.sources.some(s=>s.kind==='reddit'))bundle.gaps.push('No usable Reddit threads were retrieved. Do not infer Reddit sentiment.');
- bundle.gaps.push('Search covers a limited recent sample, not every source. Publication dates may be missing; extraction may omit context or comments. Reddit contributors are self-selected and may react to the price move.');
+ results.forEach((result,i)=>{if(result.status==='fulfilled')addEvidence(bundle,result.value);else bundle.gaps.push(i?'Company-results search failed.':'Article search failed. Check Tavily configuration or credit.');});
+ bundle.gaps.push('Reddit and social-media research are disabled. No sentiment inference is available.');
+ bundle.gaps.push('Search covers a limited recent sample, not every source. Publication dates may be missing; extraction may omit context. Company-name filtering does not independently verify claims.');
  return bundle;
 }
 // Matched dates and adjusted closes avoid comparing different sessions or split-distorted prices.

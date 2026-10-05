@@ -1,7 +1,7 @@
 import { normalizeSymbol, safeSourceUrl, type MarketSnapshot } from './market.ts';
 export type EvidenceSource={id:string;title:string;url:string;text:string;coverage:'extracted text'|'search excerpt';kind:'report'|'reddit';publishedAt:string|null;retrievedAt:string};
 export type Comparison={id:string;symbol:string;alternative:string;requestedStart:string;start:string;end:string;currency:string;returnPercent:number;alternativeReturnPercent:number;differencePoints:number;source:string;alternativeSource:string;limitations:string};
-export type ResearchBundle={version:number;sources:EvidenceSource[];gaps:string[];comparisons:Comparison[];brief?:{takeaway:string;risk?:string};prepared:{question:string;answer:string}[];searchedAt:string;searches:number};
+export type ResearchBundle={version:number;sources:EvidenceSource[];gaps:string[];comparisons:Comparison[];brief?:{takeaway:string;risk?:string;upside?:string;watch?:{date:string;title:string;status:'reported'|'estimated';sourceId:string}[]};prepared:{question:string;answer:string}[];searchedAt:string;searches:number};
 export function newResearch():ResearchBundle{return {version:2,sources:[],gaps:[],comparisons:[],prepared:[],searchedAt:new Date().toISOString(),searches:0};}
 export async function searchEvidence(key:string,query:string,reddit=false,fetcher:typeof fetch=fetch,identity?:{company:string;symbol:string}):Promise<EvidenceSource[]>{
  if(reddit)return []; // Disabled until thread identity and comment coverage can be verified.

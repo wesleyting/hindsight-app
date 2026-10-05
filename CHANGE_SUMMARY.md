@@ -1,28 +1,24 @@
 # Changes ready for GitHub
 
-## Suggested commit
+## Suggested title
 
-```text
-feat: add plain-language takeaways and evidence-backed research topics
+feat: redesign the centered stock brief with balanced outlooks
 
-Separate the quick takeaway and future risk from the full explanation.
-Expand details in place and replace long question labels with short topics.
-Add targeted deeper research and disable unreliable social-media retrieval.
-```
+## Description
 
-## Changes
+- Remove the sidebar and organize the app around a centered research workspace.
+- Promote History and Refresh brief to visible buttons; move export into History.
+- Put Read more directly beneath the takeaway and use compact superscript citations.
+- Add sourced positive/downside cases and optional upcoming dates with estimate labels.
+- Validate that displayed dates occur in cited article text and are not in the past.
+- Improve the daily-price chart and link it to Yahoo Finance.
+- Remove routine saved-answer status text and polish controls, spacing and card styling.
 
-- Add structured, source-linked takeaways and conditional future-risk text.
-- Remove clipped summaries; show complete sentences and expand detail in place.
-- Suggest short topics only when retrieved article text supports an answer.
-- Add a clearly labeled action for fresh, deeper research on a selected topic.
-- Disable Reddit/social sources with provider exclusions and local URL filters.
-- Require company identity in search-result titles and invalidate older research context.
-- Preserve history and export the new takeaway/risk alongside detailed answers.
-- Add regression coverage for source relevance, disabled Reddit calls and topic validation.
-
-No commit or push performed. Secrets and local research remain ignored by Git.
+No commit or push performed. Keys and local research remain excluded from Git.
 
 ## Validation
 
-TypeScript, production build and DeepSeek/source-filter regression tests passed. Live TE catch-up produced the separate takeaway/risk and three supported topics; repeated catch-up reused the saved result. Browser checks verified inline detail expansion, topic selection and successful targeted deeper research. No social sources entered the live catch-up. Relevance filtering and citations are not a guarantee of factual accuracy.
+- TypeScript check and production build passed.
+- DeepSeek regression tests, upcoming-date validation tests, and local API integration tests passed.
+- A live TE refresh returned a sourced takeaway, upside and downside; the repeat request reused the cached result.
+- Checked the centered layout, inline expansion, History and export controls in the browser.

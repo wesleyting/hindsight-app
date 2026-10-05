@@ -8,7 +8,7 @@ for(const path of ['/api/research?symbol=AAPL','/api/research/export?symbol=AAPL
 assert.equal((await call('/api/research?symbol=..%2Fsecret')).status,400);
 assert.equal((await call('/api/notes',{method:'POST',headers:{Origin:'https://untrusted.example'},body:JSON.stringify({symbol:'AAPL',text:'must not save'})})).status,403);
 const r=await call('/api/research?symbol=AAPL');assert.equal(r.status,200);const data=await r.json();
-assert.equal(data.market.symbol,'AAPL');assert.ok(data.market.closes.length>=2);assert.equal(data.cached,true);
+assert.equal(data.market.symbol,'AAPL');assert.ok(data.market.closes.length>=2);const cachedLoad=await(await call('/api/research?symbol=AAPL')).json();assert.equal(cachedLoad.cached,true);assert.equal(cachedLoad.market.fetchedAt,data.market.fetchedAt);
 const saved=data.analyses.find(a=>a.kind==='catchup');assert.ok(saved,'A live catch-up must already exist');
 // Cache reuse was verified during live QA. This repeatable test never calls paid /api/chat.
 const marker='QA temporary note '+crypto.randomUUID();let noteId;

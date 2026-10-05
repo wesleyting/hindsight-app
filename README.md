@@ -1,5 +1,11 @@
 # Hindsight
 
+## Latest presentation update
+
+The app is a centered stock brief without a sidebar. History is a header button; export and research settings live inside History. Refresh brief is a real button. The takeaway’s Read more control expands directly below it. Citations render as compact superscripts, and the larger daily-price chart links to Yahoo Finance. Routine saved/opened status messages were removed.
+
+The optional brief.upside explains a supported positive scenario, not an assertion about buyers’ motives. Downside and positive-case cards appear only when sourced. brief.watch holds at most two future dates with reported/estimated labels; the full date must appear in cited extracted text. No date is invented to fill the layout. The model can still misinterpret source text. Legacy briefs render without these optional additions until refreshed. No migration is required.
+
 ## Current behavior — October 4
 
 - Catch-ups provide a complete, plain-language takeaway and an optional future-risk sentence, stored in `research.brief`. No line-clamping or ellipses. “More detail” expands the full answer in the same section. Legacy answers remain readable in full until updated.

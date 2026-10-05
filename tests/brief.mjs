@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import { validatedWatchDates } from '../lib/brief.ts';
+const sources=[{id:'S1',kind:'report',coverage:'extracted text',text:'Results are expected November 12, 2026.'}];
+const event={date:'2026-11-12',title:'Quarterly results',status:'estimated',sourceId:'S1'};
+assert.deepEqual(validatedWatchDates([event],sources,'2026-10-04T00:00:00Z'),[event]);
+assert.deepEqual(validatedWatchDates([{...event,date:'2026-11-13'}],sources,'2026-10-04T00:00:00Z'),[]);
+assert.deepEqual(validatedWatchDates([event],sources,'2026-12-01T00:00:00Z'),[]);
+assert.deepEqual(validatedWatchDates([{...event,sourceId:'S99'}],sources,'2026-10-04T00:00:00Z'),[]);
+assert.deepEqual(validatedWatchDates([{...event,status:'confirmed'}],sources,'2026-10-04T00:00:00Z'),[]);
+assert.deepEqual(validatedWatchDates([event],[{...sources[0],coverage:'search excerpt'}],'2026-10-04T00:00:00Z'),[]);
+assert.equal(validatedWatchDates([event,event],sources,'2026-10-04T00:00:00Z').length,1);
+console.log('Passed: source-backed future dates, estimate labels, date mismatches, past dates, unknown sources and deduplication.');

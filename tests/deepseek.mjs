@@ -40,8 +40,8 @@ assert.equal(rounds,4);assert.equal(repairsReserved,4);assert.match(repaired.ans
 console.log('Passed: long valid answers survive, invalid optional suggestions are omitted, and two tool rounds leave room for final-format repair.');
 
 const briefContext=context();briefContext.research.sources.push({id:'S1',title:'Apple announcement',kind:'report',coverage:'extracted text',text:'Company disclosure',url:'https://example.com/a'});
-const concise=await answerWithDeepSeek({...options,context:briefContext,fetcher:async()=>Response.json({choices:[{finish_reason:'stop',message:{content:JSON.stringify({answer:'Details [S1]',brief:{takeaway:'Funding supports the factory. [S1]',risk:'More shares could reduce existing stakes. [S1]'},prepared:[{question:'Funding risk',answer:'Debt could become shares. [S1]'},{question:'Reddit sentiment',answer:'No evidence [S1]'},{question:'Unsupported topic',answer:'No source.'}]})}}]})});
-assert.equal(concise.research.brief.takeaway,'Funding supports the factory. [S1]');assert.equal(concise.research.prepared.length,1);assert.equal(concise.research.prepared[0].question,'Funding risk');
+const concise=await answerWithDeepSeek({...options,context:briefContext,fetcher:async()=>Response.json({choices:[{finish_reason:'stop',message:{content:JSON.stringify({answer:'Details [S1]',brief:{takeaway:'Funding supports the factory. [S1]',risk:'More shares could reduce existing stakes. [S1]',upside:'New capacity could support sales. [S1]'},prepared:[{question:'Funding risk',answer:'Debt could become shares. [S1]'},{question:'Reddit sentiment',answer:'No evidence [S1]'},{question:'Unsupported topic',answer:'No source.'}]})}}]})});
+assert.equal(concise.research.brief.upside,'New capacity could support sales. [S1]');assert.equal(concise.research.brief.takeaway,'Funding supports the factory. [S1]');assert.equal(concise.research.prepared.length,1);assert.equal(concise.research.prepared[0].question,'Funding risk');
 console.log('Passed: structured takeaway/risk and evidence-backed topic filtering without Reddit suggestions.');
 
 let missingBriefCalls=0;

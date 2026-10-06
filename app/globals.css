@@ -167,6 +167,21 @@ body{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI"
 .center-header{padding-top:20px}.redesigned-workspace{padding-top:12px}.redesigned-workspace .stock-shortcuts{margin-bottom:18px}.price-card{display:grid;grid-template-columns:minmax(220px,1fr) minmax(0,1.2fr);gap:12px 22px;padding:20px 22px 14px}.price-card-heading{display:block}.price-card-heading .yahoo-link{margin-top:10px;width:fit-content}.price-card>a{align-self:center}.price-card>a svg{margin:0;max-height:108px}.chart-caption{grid-column:1/-1;margin-top:2px}.source-citation a{color:#6075a5!important}
 @media(max-width:600px){.price-card{grid-template-columns:1fr;gap:6px;padding:16px}.price-card-heading{display:flex;justify-content:space-between;align-items:flex-start}.price-card-heading .yahoo-link{margin-top:4px}.price-card>a svg{max-height:80px}.chart-caption{grid-column:auto}}
 .snapshot-comparison { margin-bottom:24px; }
+.stock-shortcut{display:inline-flex;align-items:center;border:1px solid #dce2ee;border-radius:20px;background:#fff;overflow:hidden}
+.stock-shortcuts .stock-shortcut button{border:0;margin:0;border-radius:0;background:transparent}
+.stock-shortcuts .stock-shortcut button[aria-pressed=true]{background:#edf1ff}
+.stock-shortcuts .stock-shortcut .remove-stock{padding:8px 9px 8px 5px;color:#8791a5}
+.stock-shortcuts .stock-shortcut .remove-stock:hover,.stock-shortcuts .stock-shortcut .remove-stock:focus-visible{background:#fbeef0;color:#aa4758}
+.chart-link{position:relative;border-radius:10px;transition:background .15s,box-shadow .15s;display:block;padding:4px}
+.chart-link:hover,.chart-link:focus-visible{background:#f1f5fc;box-shadow:0 0 0 1px #d7e0f0}
+.chart-link-hint{display:flex;justify-content:flex-end;align-items:center;gap:3px;color:#566b98;font-size:10px;opacity:0;transition:opacity .15s}
+.chart-link:hover .chart-link-hint,.chart-link:focus-visible .chart-link-hint{opacity:1}
+.price-card .chart-link-hint svg{width:12px;height:12px;margin:0}
+.text-action:hover,.read-more:hover,.yahoo-link:hover{text-decoration:underline;color:#344ea9}
+.history-choice:hover{background:#f2f5fc!important}
+.inline-detail,.focus-answer{scroll-margin-top:24px}
+@media(hover:none){.chart-link-hint{opacity:1}}
+@media(prefers-reduced-motion:reduce){.chart-link,.chart-link-hint{transition:none}}
 .snapshot-banner { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 20px; margin-bottom:20px; border:1px solid #cdd8ef; border-radius:14px; background:#edf2fb; }
 .snapshot-banner strong,.snapshot-banner span { display:block; }
 .snapshot-banner span { margin-top:4px; font-size:12px; color:#596b85; }

@@ -2,21 +2,19 @@
 
 ## Suggested title
 
-feat: replace research history with saved stock snapshots
+fix: polish stock navigation, chart cues and local startup
 
 ## Description
 
-- Add manually saved, renameable stock snapshots in the existing D1 database.
-- Restore historical prices, brief, sources, prepared topics and the open explanation without AI calls.
-- Compare two saved summaries and dated prices; download individual snapshots as JSON.
-- Replace the cluttered answer history and research settings with a focused snapshot panel.
-- Link the chart to Yahoo’s main stock page, simplify the time label, move citations after punctuation, and shorten the follow-up button to Look deeper.
+- Keep stock shortcuts in a stable order and add accessible remove controls; preserve saved research.
+- Remember the last viewed ticker separately from shortcut order.
+- Add chart hover/focus feedback and a Yahoo link hint, including touch support.
+- Show readable month/day chart ranges, with years across year boundaries.
+- Scroll and focus expanded details and selected explanations, respecting reduced motion.
+- Automatically restore the existing local development session when a stock request returns 401; retain server authentication and production behavior.
 
 ## Validation
 
-- Production build, TypeScript and presentation unit checks passed.
-- Snapshot integration tests cover authentication, origin checks, stale views, missing analyses, save/list/rename/reopen, content preservation, validation and cleanup without AI calls.
-- Browser verified the real TE view, snapshot saving, renaming, reopening and comparison; temporary comparison test data removed.
-- Migration 0003_huge_ser_duncan.sql applied to the local D1 database.
+Production build, TypeScript, presentation tests and git diff checks passed. Browser checks covered stock switching, removal/re-adding, explanation focus/scroll, keyboard chart-link feedback, and automatic local session recovery after signing out. No paid AI calls were made for these checks.
 
-Snapshots preserve content rather than historical styling. Source research remains internally saved for context and caching. Local snapshot data is not included in GitHub source pushes. No confidence score or analyst tracking was added. No commit or push performed.
+Prediction measurement was discussed and documented as a next step; no confidence scores, analyst leaderboard or background jobs were added. No database migration is needed for this pass. No commit or push performed.

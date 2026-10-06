@@ -1,5 +1,14 @@
 # Hindsight handoff
 
+## October 5 — interaction polish
+
+Stock shortcuts keep insertion order, have labelled remove controls, and remember the last opened stock independently. Removing a shortcut preserves its database research and snapshots. Chart links have hover/focus cues and touch-visible link hints; chart dates use readable month/day ranges (years included across year boundaries). Read more and prepared explanations scroll into view and receive keyboard focus, respecting reduced-motion preferences.
+
+In development on loopback hosts only, a 401 while opening a stock invokes the existing local sign-in endpoint once and retries. This restores the same existing local identity and data; server authentication checks remain intact and production does not auto-sign-in. It does not call AI. If no shortcuts are saved, the user still chooses a ticker.
+
+Forecast evaluation remains a proposed next feature: immutable timestamped predictions with named forecaster/model version, horizon, direction/target, evidence and optional probability; deterministic outcomes using consistently adjusted prices and matched horizons. Do not treat general analyst Buy ratings as one-week predictions or invent probabilities from prose. Report sample counts and benchmark results; all recorded forecasts must remain visible, including failures. No scoring or automatic weekly research is implemented in this pass.
+
+
 ## October 5 — saved stock views
 
 Snapshots replace the visible research-history list. Saving is manual: Snapshots > Save snapshot preserves the displayed chart data, brief, source text, prepared topics, open explanation and expanded state in the existing account-scoped D1 database. Snapshot names are editable. Opening a snapshot restores a clearly labelled historical view with research controls disabled; Back to latest restores the current view. Two saved snapshots can compare their takeaways and dated prices side by side. This is preserved content rendered in the current UI, not a pixel screenshot. Saving, renaming, opening and comparing make no AI calls. Research still persists internally for cache and context, but each answer no longer becomes a visible history item.

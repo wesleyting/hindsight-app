@@ -1,5 +1,16 @@
 # Hindsight
 
+## October 5 — saved stock views
+
+Snapshots replace the visible research-history list. Saving is manual: Snapshots > Save snapshot preserves the displayed chart data, brief, source text, prepared topics, open explanation and expanded state in the existing account-scoped D1 database. Snapshot names are editable. Opening a snapshot restores a clearly labelled historical view with research controls disabled; Back to latest restores the current view. Two saved snapshots can compare their takeaways and dated prices side by side. This is preserved content rendered in the current UI, not a pixel screenshot. Saving, renaming, opening and comparing make no AI calls. Research still persists internally for cache and context, but each answer no longer becomes a visible history item.
+
+Snapshot JSON downloads are available from Snapshots while viewing a saved snapshot. Downloads do not yet have an import UI. Local D1 storage under `.wrangler/state` remains private and ignored by Git; GitHub pushes do not back up snapshots. Supabase is not required. Apply the new `drizzle/0003_huge_ser_duncan.sql` migration once to databases lacking `stock_snapshots` (already applied locally). Use the same local Wrangler command shown below with this file, after checking existing tables.
+
+The price chart links to the main Yahoo stock page and uses a simple duration label (1 week for 6–9 calendar days; actual day count otherwise). Citations appear after punctuation and the follow-up button says Look deeper. Research settings have been removed from the snapshot panel; setup instructions remain only for an unconfigured app. No AI stock-confidence percentage or analyst leaderboard is implemented: dated predictions, horizons, attribution and outcome rules must be defined first.
+
+These notes supersede older History/settings UI descriptions below.
+
+
 ## Latest presentation update
 
 The app is a centered stock brief without a sidebar. History is a header button; export and research settings live inside History. Refresh brief is a real button. The takeaway’s Read more control expands directly below it. Citations render as compact superscripts, and the larger daily-price chart links to Yahoo Finance. Routine saved/opened status messages were removed.

@@ -2,23 +2,21 @@
 
 ## Suggested title
 
-feat: redesign the centered stock brief with balanced outlooks
+feat: replace research history with saved stock snapshots
 
 ## Description
 
-- Remove the sidebar and organize the app around a centered research workspace.
-- Promote History and Refresh brief to visible buttons; move export into History.
-- Put Read more directly beneath the takeaway and use compact superscript citations.
-- Add sourced positive/downside cases and optional upcoming dates with estimate labels.
-- Validate that displayed dates occur in cited article text and are not in the past.
-- Improve the daily-price chart and link it to Yahoo Finance.
-- Remove routine saved-answer status text and polish controls, spacing and card styling.
-
-No commit or push performed. Keys and local research remain excluded from Git.
+- Add manually saved, renameable stock snapshots in the existing D1 database.
+- Restore historical prices, brief, sources, prepared topics and the open explanation without AI calls.
+- Compare two saved summaries and dated prices; download individual snapshots as JSON.
+- Replace the cluttered answer history and research settings with a focused snapshot panel.
+- Link the chart to Yahoo’s main stock page, simplify the time label, move citations after punctuation, and shorten the follow-up button to Look deeper.
 
 ## Validation
 
-- TypeScript check and production build passed.
-- DeepSeek regression tests, upcoming-date validation tests, and local API integration tests passed.
-- A live TE refresh returned a sourced takeaway, upside and downside; the repeat request reused the cached result.
-- Checked the centered layout, inline expansion, History and export controls in the browser.
+- Production build, TypeScript and presentation unit checks passed.
+- Snapshot integration tests cover authentication, origin checks, stale views, missing analyses, save/list/rename/reopen, content preservation, validation and cleanup without AI calls.
+- Browser verified the real TE view, snapshot saving, renaming, reopening and comparison; temporary comparison test data removed.
+- Migration 0003_huge_ser_duncan.sql applied to the local D1 database.
+
+Snapshots preserve content rather than historical styling. Source research remains internally saved for context and caching. Local snapshot data is not included in GitHub source pushes. No confidence score or analyst tracking was added. No commit or push performed.

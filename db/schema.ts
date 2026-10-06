@@ -7,6 +7,9 @@ export const reflections = sqliteTable('reflections', {
 export const marketCache=sqliteTable('market_cache',{
  symbol:text('symbol').primaryKey(),payload:text('payload').notNull(),fetchedAt:text('fetched_at').notNull(),
 });
+export const stockSnapshots=sqliteTable('stock_snapshots',{
+ id:text('id').primaryKey(),userId:text('user_id').notNull(),symbol:text('symbol').notNull(),name:text('name').notNull(),createdAt:text('created_at').notNull(),payload:text('payload').notNull(),
+});
 export const analyses=sqliteTable('analyses',{
  id:text('id').primaryKey(),userId:text('user_id').notNull(),symbol:text('symbol').notNull(),kind:text('kind').notNull(),question:text('question').notNull(),answer:text('answer').notNull(),contextHash:text('context_hash').notNull(),market:text('market').notNull(),model:text('model').notNull(),usage:text('usage').notNull(),research:text('research'),createdAt:text('created_at').notNull(),
 });

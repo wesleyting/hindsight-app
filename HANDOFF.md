@@ -1,5 +1,14 @@
 # Hindsight handoff
 
+## October 6 — both outlooks and rolling refresh
+
+Both outlook headings remain visible for every saved brief. Missing or rejected upside/downside text is labelled as not established in that brief, never proof that no upside/risk exists. Investigate upside/downside starts a fresh targeted question with evidence and counterevidence; it opens an explanation rather than silently rewriting the saved brief. Historical snapshots remain read-only.
+
+Initial retrieval now covers financial risks and growth/opportunity/milestone evidence within the existing two-search budget. Prompt balanced-brief-v7 explicitly assesses both sides, uses available tools for gaps, requires support from actual retrieved passages, and prohibits invented symmetry. Citation validation checks known source IDs and extracted-text availability; it cannot guarantee semantic truth or exhaustive coverage.
+
+Explicit brief refresh now also bypasses the 15-minute market cache, while ordinary stock opens retain it. Refresh runs on any day and includes a rolling window; there is no calendar-week completion gate. Prices may include today's unfinished session. Failed provider refreshes retain the existing stale-data warning. The UI shows the completion time and restores the local development session after a 401 during research, with one retry. Offline-server errors now explain that the app must be restarted. The local server was stopped when this turn began and was restarted; a real Tuesday TE refresh completed with new prices, sources and a newly dated brief. No changes to daily quotas or background jobs.
+
+
 ## October 5 — explicit refresh and snapshot controls
 
 Refresh brief now sends refresh=true to bypass the six-hour analysis cache and perform fresh research within the existing call/quota limits. Normal cache behavior remains for non-refresh API requests. Explicit refresh uses the current server market snapshot if the browser's market timestamp is old; the UI adopts that market from the completed analysis. It does not force a new quote within the market cache's 15-minute window. Refresh progress, completion and failures appear inside the brief card; it no longer invokes question-panel scrolling or collapses expanded details. Opening stocks still makes no AI call.

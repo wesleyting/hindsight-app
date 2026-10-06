@@ -167,6 +167,8 @@ body{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI"
 .center-header{padding-top:20px}.redesigned-workspace{padding-top:12px}.redesigned-workspace .stock-shortcuts{margin-bottom:18px}.price-card{display:grid;grid-template-columns:minmax(220px,1fr) minmax(0,1.2fr);gap:12px 22px;padding:20px 22px 14px}.price-card-heading{display:block}.price-card-heading .yahoo-link{margin-top:10px;width:fit-content}.price-card>a{align-self:center}.price-card>a svg{margin:0;max-height:108px}.chart-caption{grid-column:1/-1;margin-top:2px}.source-citation a{color:#6075a5!important}
 @media(max-width:600px){.price-card{grid-template-columns:1fr;gap:6px;padding:16px}.price-card-heading{display:flex;justify-content:space-between;align-items:flex-start}.price-card-heading .yahoo-link{margin-top:4px}.price-card>a svg{max-height:80px}.chart-caption{grid-column:auto}}
 .snapshot-comparison { margin-bottom:24px; }
+.outlook-gap{font-size:13px;line-height:1.7;color:#727987}
+.investigate-outlook{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:12px}
 .stock-shortcut[data-active=true]{background:#edf1ff;border-color:#c8d2f0}
 .stock-shortcuts .stock-shortcut[data-active=true] .remove-stock{color:#6274b0}
 .brief-refresh-status{min-height:22px;font-size:11px;color:#687998;margin:0 0 8px}

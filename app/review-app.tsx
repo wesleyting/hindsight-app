@@ -69,14 +69,18 @@ export default function ReviewApp(){
   const current=sequence.current,symbol=data.market.symbol;
   scrollRequest.current=kind==='question'?'answer':null;aiBusy.current=true;setBusyKind(kind);setBusy(true);setError('');setBriefStatus('');setPending(kind==='catchup'?'Refreshing your brief':title);if(kind==='question')setSelected(null);
   try{
-   const response=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({symbol,kind,deeper,refresh:kind==='catchup',question:kind==='question'?text:undefined,fetchedAt:data.market.fetchedAt})});
+   const request={method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({symbol,kind,deeper,refresh:kind==='catchup',question:kind==='question'?text:undefined,fetchedAt:data.market.fetchedAt})};
+   let response=await fetch('/api/chat',request);
+   if(response.status===401&&process.env.NODE_ENV==='development'&&['127.0.0.1','localhost','[::1]'].includes(window.location.hostname)){
+    await fetch('/signin-with-chatgpt?return_to=/',{redirect:'manual'});response=await fetch('/api/chat',request);
+   }
    const body=await response.json() as {analysis:SavedAnalysis;cached:boolean;error?:string};if(current!==sequence.current)return;
    if(!response.ok){if(response.status===401)setAuth(true);throw new Error(body.error||'Could not answer. Please retry.');}
    setData(previous=>previous?{...previous,...(kind==='catchup'?{market:body.analysis.market}:{}),analyses:[body.analysis,...previous.analyses.filter(a=>a.id!==body.analysis.id)].slice(0,30)}:previous);
-   if(kind==='catchup')setBriefStatus(body.cached?'Showing saved research.':'Brief refreshed just now.');
+   if(kind==='catchup')setBriefStatus(body.cached?'Showing saved research.':`Research updated at ${new Date(body.analysis.createdAt).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',second:'2-digit'})}.`);
    if(kind==='question')setSelected({analysis:body.analysis,title,answer:body.analysis.answer});
    setQuestion(previous=>previous===text?'':previous);
-  }catch(e){if(current===sequence.current){if(kind==='catchup')setBriefStatus((e as Error).message);else setError((e as Error).message);}}
+  }catch(e){if(current===sequence.current){const message=e instanceof TypeError?'The local app could not be reached. Restart Hindsight and try again. Your saved brief is unchanged.':(e as Error).message;if(kind==='catchup')setBriefStatus(message);else setError(message);}}
   finally{aiBusy.current=false;setBusy(false);setBusyKind(null);setPending('');}
  }
  const view=snapshot?{...data!,market:snapshot.payload.market,analyses:[snapshot.payload.brief]}:data;
@@ -125,7 +129,7 @@ export default function ReviewApp(){
  {latest?<><div className="plain-brief"><Answer analysis={{...latest,answer:latest.research?.brief?.takeaway??latest.answer}}/></div>
  <div className="brief-actions">{latest.research?.brief&&<button className="read-more" aria-expanded={expanded} onClick={()=>{if(!expanded)scrollRequest.current='detail';setExpanded(value=>!value);}}>{expanded?'Read less':'Read more'}<ArrowUpRight size={13}/></button>}<button className="text-action" onClick={()=>showSources(latest)}><BookOpen size={13}/>Sources</button></div>
  {expanded&&latest.research?.brief&&<div className="inline-detail" ref={detailRef} tabIndex={-1}><Answer analysis={latest}/></div>}
- {(latest.research?.brief?.upside||latest.research?.brief?.risk)&&<div className="perspectives">{latest.research.brief.upside&&<article className="perspective upside"><h3><TrendingUp size={16}/>What could work</h3><Answer analysis={{...latest,answer:latest.research.brief.upside}}/></article>}{latest.research.brief.risk&&<article className="perspective downside"><h3><ShieldAlert size={16}/>What could go wrong</h3><Answer analysis={{...latest,answer:latest.research.brief.risk}}/></article>}</div>}
+ <div className="perspectives">{(['upside','risk'] as const).map(side=>{const explanation=latest.research?.brief?.[side];const positive=side==='upside';return <article className={`perspective ${positive?'upside':'downside'}`} key={side}><h3>{positive?<TrendingUp size={16}/>:<ShieldAlert size={16}/>}What could {positive?'work':'go wrong'}</h3>{explanation?<Answer analysis={{...latest,answer:explanation}}/>:<><p className="outlook-gap">No clear {positive?'upside':'downside'} established in this brief. That does not mean there is none.</p>{!snapshot&&<button className="text-action investigate-outlook" disabled={busy||!configured} onClick={()=>void ask('question',`Investigate the ${positive?'positive case and potential upside':'downside risks'} for ${view!.market.company} (${view!.market.symbol}). Search current company-relevant sources for concrete evidence and counterevidence. Explain the strongest supported scenario and its limitations simply. Missing evidence does not prove ${positive?'no upside':'no risk'} exists; do not invent a case to fill the gap.`,true,positive?'Investigate upside':'Investigate downside')}><Search size={12}/>Investigate {positive?'upside':'downside'}</button>}</>}</article>;})}</div>
  {!!latest.research?.brief?.watch?.length&&<div className="watch-dates"><h3><CalendarDays size={15}/>On the horizon</h3>{latest.research.brief.watch.map(event=><div className="watch-event" key={event.date+event.title}><time dateTime={event.date}>{new Date(event.date+'T12:00:00Z').toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'})}</time><span><Answer analysis={{...latest,answer:`${event.title} [${event.sourceId}]`}}/><small>{event.status==='estimated'?'Estimated date':'Reported date'}</small></span></div>)}</div>}
  <p className="brief-timestamp">Researched {date(latest.createdAt)}</p></>:<p className="muted small">{configured?'The key development, both sides of the story, and what to watch.':'Connect DeepSeek to create your brief.'}{!configured&&<button className="text-action" onClick={()=>setPanel('setup')}>Set up research</button>}</p>}
 

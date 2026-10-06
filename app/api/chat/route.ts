@@ -22,7 +22,7 @@ export async function POST(request:Request){
  let token:string|undefined;
  try{
   const db=database();
-  const {market}=await marketFor(symbol);
+  const {market}=await marketFor(symbol,kind==='catchup'&&value.data.refresh===true);
   if(market.fetchedAt!==fetchedAt&&!(kind==='catchup'&&value.data.refresh))return json({error:'The market context changed. Refresh this stock before asking again.'},409);
   const [history,notes]=await Promise.all([historyFor(user.userId,symbol),notesFor(user.userId,symbol)]);
   const model=env.DEEPSEEK_MODEL||'deepseek-flash';

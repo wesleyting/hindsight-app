@@ -51,3 +51,10 @@ console.log('Passed: omitted brief is repaired within the existing model budget.
 
 await answerWithDeepSeek({...options,context:context(),investigate:true,tavilyKey:'test',fetcher:async(url,init)=>{assert.equal(JSON.parse(init.body).tool_choice.function.name,'search_more');return Response.json(finish());}});
 console.log('Passed: Look deeper explicitly requests a fresh research tool call.');
+
+for(const optional of [{risk:'Funding risk [S1]'}, {upside:'Unsupported headline-only upside [N1]',risk:'Funding risk [S1]'}, {upside:'Unknown citation [S99]'}]){
+ const checked=await answerWithDeepSeek({...options,kind:'catchup',context:structuredClone(briefContext),fetcher:async()=>Response.json({choices:[{finish_reason:'stop',message:{content:JSON.stringify({answer:'Details [S1]',brief:{takeaway:'Funding supports construction [S1]',...optional},prepared:[]})}}]})});
+ assert.equal(checked.research.brief.upside,undefined);
+ assert.equal(checked.research.brief.risk,optional.risk);
+}
+console.log('Passed: absent, headline-only and unknown-citation upside remain missing rather than invented; supported downside survives.');

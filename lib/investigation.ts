@@ -41,7 +41,7 @@ export async function gatherResearch(market:MarketSnapshot,key?:string,fetcher:t
  const bundle=newResearch();
  if(!key){bundle.gaps.push('Tavily is not configured; only Yahoo headlines are available. No article or Reddit investigation was performed.');return bundle;}
  const query=`${market.company} (${market.symbol})`;
- const results=await Promise.allSettled([searchEvidence(key,`${query} recent company announcement financing earnings`,false,fetcher,market),searchEvidence(key,`${query} investor relations financial results risks`,false,fetcher,market)]);
+ const results=await Promise.allSettled([searchEvidence(key,`${query} recent company announcements earnings financial risks`,false,fetcher,market),searchEvidence(key,`${query} investor relations growth outlook opportunities milestones`,false,fetcher,market)]);
  bundle.searches=2;
  results.forEach((result,i)=>{if(result.status==='fulfilled')addEvidence(bundle,result.value);else bundle.gaps.push(i?'Company-results search failed.':'Article search failed. Check Tavily configuration or credit.');});
  bundle.gaps.push('Reddit and social-media research are disabled. No sentiment inference is available.');

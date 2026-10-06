@@ -15,3 +15,8 @@ const chart=currency=>async url=>{const symbol=url.includes('/AAPL?')?'AAPL':'MS
 const comparison=await compareStocks('AAPL','MSFT',d(6),chart('USD'));assert.equal(comparison.start,d(4));assert.equal(comparison.end,d(3));assert.ok(Math.abs(comparison.returnPercent-9.090909)<0.0001);assert.ok(Math.abs(comparison.alternativeReturnPercent-10)<0.0001);
 await assert.rejects(compareStocks('AAPL','MSFT',d(6),chart('CAD')),/same currency/);await assert.rejects(compareStocks('AAPL','AAPL',d(6)),/different/);await assert.rejects(compareStocks('AAPL','MSFT','2099-01-01'),/past start date/);
 console.log('Passed: source filtering/deduplication, missing coverage, provider failure, matched dates, adjusted return math, incomplete-session exclusion, currency/date validation.');
+
+const initialQueries=[];
+await gatherResearch({company:'Apple',symbol:'AAPL'},'test',async(url,init)=>{initialQueries.push(JSON.parse(init.body).query);return Response.json({results:[]});});
+assert.equal(initialQueries.length,2);assert.ok(initialQueries.some(q=>q.includes('risks')));assert.ok(initialQueries.some(q=>q.includes('growth outlook opportunities')));
+console.log('Passed: initial retrieval searches both risks and positive business prospects within the same two-search budget.');

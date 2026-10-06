@@ -20,7 +20,7 @@ try{
  assert.equal((await call('/api/snapshots','PATCH',{id,name:'Renamed snapshot'})).status,200);
  const reopened=(await(await call('/api/snapshots?id='+id)).json()).snapshot;
  assert.equal(reopened.name,'Renamed snapshot');assert.deepEqual(reopened.payload,saved.payload);
- assert.ok((await(await call('/api/snapshots?symbol=TE')).json()).snapshots.some(s=>s.id===id));
+ const listed=(await(await call('/api/snapshots?symbol=TE')).json()).snapshots.find(s=>s.id===id);assert.ok(listed);assert.equal(listed.rangeStart,view.market.startDate);assert.equal(listed.rangeEnd,view.market.endDate);
  assert.equal((await call('/api/snapshots','PATCH',{id,name:''})).status,400);
 }finally{if(id){assert.equal((await call('/api/snapshots','DELETE',{id})).status,200);assert.equal((await call('/api/snapshots?id='+id)).status,404);}}
 console.log('Passed snapshot authentication, origin, stale view checks, save/list/rename/reopen, content preservation, validation and cleanup. No AI calls.');

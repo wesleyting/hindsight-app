@@ -1,5 +1,12 @@
 # Hindsight
 
+## October 5 — explicit refresh and snapshot controls
+
+Refresh brief now sends refresh=true to bypass the six-hour analysis cache and perform fresh research within the existing call/quota limits. Normal cache behavior remains for non-refresh API requests. Explicit refresh uses the current server market snapshot if the browser's market timestamp is old; the UI adopts that market from the completed analysis. It does not force a new quote within the market cache's 15-minute window. Refresh progress, completion and failures appear inside the brief card; it no longer invokes question-panel scrolling or collapses expanded details. Opening stocks still makes no AI call.
+
+The whole selected stock chip, including its remove button, shares the selected background. Chart links retain their visual hover/focus hint without the duplicate native title tooltip. New snapshot names default to the covered chart dates and year; list entries expose the price window from the stored payload, distinct from creation time. Existing custom names are preserved. Delete opens an inline irreversible-delete confirmation; deleting an open snapshot returns to the latest view and clears affected comparisons. No migration is required.
+
+
 ## October 5 — interaction polish
 
 Stock shortcuts keep insertion order, have labelled remove controls, and remember the last opened stock independently. Removing a shortcut preserves its database research and snapshots. Chart links have hover/focus cues and touch-visible link hints; chart dates use readable month/day ranges (years included across year boundaries). Read more and prepared explanations scroll into view and receive keyboard focus, respecting reduced-motion preferences.

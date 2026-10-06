@@ -6,7 +6,7 @@ import { normalizeSymbol } from '@/lib/market';
 import { answerWithDeepSeek,PROMPT_VERSION } from '@/lib/deepseek';
 import { database,marketFor,historyFor,notesFor,hashContext,json,validOrigin,analysisFromRow,type AnalysisRow } from '@/lib/research-store';
 export const dynamic='force-dynamic';
-const input=z.object({deeper:z.boolean().optional(),symbol:z.string().max(20),kind:z.enum(['catchup','question']),question:z.string().trim().max(1500).optional(),fetchedAt:z.string().datetime()}).strict();
+const input=z.object({deeper:z.boolean().optional(),refresh:z.boolean().optional(),symbol:z.string().max(20),kind:z.enum(['catchup','question']),question:z.string().trim().max(1500).optional(),fetchedAt:z.string().datetime()}).strict();
 export async function GET(){return json({provider:'deepseek',configured:Boolean(env.DEEPSEEK_API_KEY?.trim()),researchConfigured:Boolean(env.TAVILY_API_KEY?.trim()),dataMode:'real',dailyLimit:30});}
 export async function POST(request:Request){
  const user=await getChatGPTUser();if(!user)return json({error:'Sign in to ask DeepSeek.'},401);
@@ -23,13 +23,13 @@ export async function POST(request:Request){
  try{
   const db=database();
   const {market}=await marketFor(symbol);
-  if(market.fetchedAt!==fetchedAt)return json({error:'The market context changed. Refresh this stock before asking again.'},409);
+  if(market.fetchedAt!==fetchedAt&&!(kind==='catchup'&&value.data.refresh))return json({error:'The market context changed. Refresh this stock before asking again.'},409);
   const [history,notes]=await Promise.all([historyFor(user.userId,symbol),notesFor(user.userId,symbol)]);
   const model=env.DEEPSEEK_MODEL||'deepseek-flash';
   const {fetchedAt:_,...stableMarket}=market;
   const hash=await hashContext({market:stableMarket,notes:notes.map(n=>({text:n.text,createdAt:n.createdAt})),researchEnabled:Boolean(env.TAVILY_API_KEY?.trim()),model,promptVersion:PROMPT_VERSION,kind,question});
   // A saved catch-up is free to reopen; conversation questions are always contextual.
-  if(kind==='catchup'){
+  if(kind==='catchup'&&!value.data.refresh){
    const cached=await db.prepare('SELECT * FROM analyses WHERE user_id=? AND symbol=? AND context_hash=? AND created_at>? ORDER BY created_at DESC LIMIT 1').bind(user.userId,symbol,hash,new Date(Date.now()-6*3600_000).toISOString()).first<AnalysisRow>();
    if(cached)return json({analysis:analysisFromRow(cached),cached:true});
   }

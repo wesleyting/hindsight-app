@@ -58,3 +58,14 @@ for(const optional of [{risk:'Funding risk [S1]'}, {upside:'Unsupported headline
  assert.equal(checked.research.brief.risk,optional.risk);
 }
 console.log('Passed: absent, headline-only and unknown-citation upside remain missing rather than invented; supported downside survives.');
+
+const withPrevious=structuredClone(briefContext);withPrevious.previousAnalysis={createdAt:'2026-10-01T12:00:00Z',answer:'Earlier assessment'};
+const makeBrief=ctx=>answerWithDeepSeek({...options,kind:'catchup',context:ctx,fetcher:async()=>Response.json({choices:[{finish_reason:'stop',message:{content:JSON.stringify({answer:'Details [S1]',brief:{takeaway:'Funding supports construction. [S1]',headline:'New funding supports construction [S1]',update:'The retrieved evidence establishes no material change to the earlier financing gap. [S1]'},prepared:[]})}}]})});
+const updated=await makeBrief(withPrevious);assert.match(updated.research.brief.headline,/New funding/);assert.equal(updated.research.brief.changeSince,'2026-10-01T12:00:00Z');assert.match(updated.research.brief.update,/no material change/);
+const firstBrief=await makeBrief(structuredClone(briefContext));assert.equal(firstBrief.research.brief.update,undefined);assert.equal(firstBrief.research.brief.changeSince,undefined);
+console.log('Passed: sourced headlines and comparison notes, with comparison dates taken from actual prior context; no invented first-brief comparison.');
+
+const {validBriefUpdate}=await import('../lib/brief-update.ts');
+assert.equal(validBriefUpdate('Since the previous assessment, the sale closed around September 30, 2026.','2026-10-06T12:00:00Z'),false);
+assert.equal(validBriefUpdate('Since the previous assessment, a contract was announced October 8, 2026.','2026-10-06T12:00:00Z'),true);
+assert.equal(validBriefUpdate('Newly retrieved coverage clarifies the September 30, 2026 sale.','2026-10-06T12:00:00Z'),true);

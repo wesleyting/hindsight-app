@@ -20,7 +20,7 @@ try{
  assert.equal((await call('/api/snapshots','PATCH',{id,name:'Renamed snapshot'})).status,200);
  const reopened=(await(await call('/api/snapshots?id='+id)).json()).snapshot;
  assert.equal(reopened.name,'Renamed snapshot');assert.deepEqual(reopened.payload,saved.payload);
- const listed=(await(await call('/api/snapshots?symbol=TE')).json()).snapshots.find(s=>s.id===id);assert.ok(listed);assert.equal(listed.rangeStart,view.market.startDate);assert.equal(listed.rangeEnd,view.market.endDate);
+ const listed=(await(await call('/api/snapshots?symbol=TE')).json()).snapshots.find(s=>s.id===id);assert.ok(listed);assert.equal(listed.rangeStart,view.market.startDate);assert.equal(listed.rangeEnd,view.market.endDate);assert.equal(listed.price,view.market.closes.at(-1).close);assert.equal(listed.currency,view.market.currency);assert.equal(listed.preview,brief.research?.brief?.headline??brief.research?.brief?.takeaway??null);
  assert.equal((await call('/api/snapshots','PATCH',{id,name:''})).status,400);
 }finally{if(id){assert.equal((await call('/api/snapshots','DELETE',{id})).status,200);assert.equal((await call('/api/snapshots?id='+id)).status,404);}}
 console.log('Passed snapshot authentication, origin, stale view checks, save/list/rename/reopen, content preservation, validation and cleanup. No AI calls.');

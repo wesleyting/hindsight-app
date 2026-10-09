@@ -167,6 +167,35 @@ body{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI"
 .center-header{padding-top:20px}.redesigned-workspace{padding-top:12px}.redesigned-workspace .stock-shortcuts{margin-bottom:18px}.price-card{display:grid;grid-template-columns:minmax(220px,1fr) minmax(0,1.2fr);gap:12px 22px;padding:20px 22px 14px}.price-card-heading{display:block}.price-card-heading .yahoo-link{margin-top:10px;width:fit-content}.price-card>a{align-self:center}.price-card>a svg{margin:0;max-height:108px}.chart-caption{grid-column:1/-1;margin-top:2px}.source-citation a{color:#6075a5!important}
 @media(max-width:600px){.price-card{grid-template-columns:1fr;gap:6px;padding:16px}.price-card-heading{display:flex;justify-content:space-between;align-items:flex-start}.price-card-heading .yahoo-link{margin-top:4px}.price-card>a svg{max-height:80px}.chart-caption{grid-column:auto}}
 .snapshot-comparison { margin-bottom:24px; }
+/* A quieter reading surface with a stronger visual hierarchy. */
+.brief-app{background:radial-gradient(ellipse at 50% -120px,#eaf1ed 0,transparent 650px),#f7f8fa}
+.center-header{padding-top:30px;padding-bottom:22px}.header-caption{color:#74847e}.wordmark span{color:#3c816d}
+.redesigned-workspace{padding-top:10px}.stock-heading h1{font-size:27px;letter-spacing:-.8px}.stock-heading h1 span{font-size:15px;color:#728078}
+.redesigned-workspace .brief-card{padding:28px;border-color:#e3e8e6;box-shadow:0 7px 24px #253b3005}
+.brief-card .section-heading h2{font-size:12px;color:#607169;text-transform:uppercase;letter-spacing:1.1px;font-weight:600}
+.brief-headline{font-size:27px;font-weight:600;line-height:1.25;letter-spacing:-.7px;max-width:640px;margin:4px 0 14px;color:#223c32}
+.plain-brief .generated-answer{font-size:16px;line-height:1.8;color:#4c5c55}.brief-actions{margin-top:16px}
+.brief-refresh-status{color:#708178;font-size:11px;margin-bottom:10px}
+.brief-update{border-left:2px solid #9dbba9;background:#f5f8f6;border-radius:0 9px 9px 0;padding:13px 16px;margin-top:22px}
+.brief-update>div{display:flex;gap:7px;align-items:center;margin-bottom:5px}.brief-update h3{font-size:12px;color:#496956}.brief-update .generated-answer{font-size:13px;line-height:1.75;color:#65736b}
+.update-date{font-size:11px;color:#7f8c84;margin-left:auto}.update-dot{width:5px;height:5px;border-radius:50%;background:#6a9b80}
+.perspectives{gap:14px;margin-top:24px}.perspective{padding:19px;background:#f2f7f4;border:1px solid #e5ede7}.perspective.downside{background:#faf6ef;border-color:#eee7db}
+.outlook-eyebrow{display:block;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#718d7c;margin-bottom:10px}.downside .outlook-eyebrow{color:#a18c6a}
+.perspective h3{font-size:14px;margin-bottom:9px}.perspective .generated-answer{color:#53675a;font-size:13px}.perspective.downside .generated-answer{color:#796950}
+.watch-dates{border-top:1px solid #edf0ed;padding-top:18px}.brief-timestamp{font-size:11px;color:#7e8c85}
+.interactive-price-card{grid-template-columns:minmax(200px,.85fr) minmax(0,1.4fr);padding:22px 24px 14px;border-color:#e3e8e6;gap:10px 24px}
+.card-eyebrow{display:block;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#82918a;margin-bottom:7px}
+.interactive-price-card .price-numbers{font-size:31px;letter-spacing:-1px;line-height:1.4}.price-currency{font-size:12px;letter-spacing:0;color:#89958f}.price-window{font-size:12px;color:#788780;margin-top:8px}
+.interactive-price-card .price-card-heading .yahoo-link{margin-top:10px}.interactive-chart{align-self:center;min-width:0;border-radius:10px;outline-offset:5px}.interactive-chart:focus-visible{outline:2px solid #b4cec0}
+.chart-readout{display:flex;justify-content:space-between;font-size:11px;color:#7a8b81;padding:0 5px}.chart-readout strong{font-weight:500;color:#385c4b;font-variant-numeric:tabular-nums}
+.interactive-chart svg{width:100%;height:auto;max-height:132px;margin:4px 0 0;display:block;cursor:crosshair;touch-action:pan-y}
+.chart-caption{color:#7d8984;font-size:10px;flex-wrap:wrap}
+.redesigned-workspace .suggestions button{border-radius:12px;border-color:#e1e7e4;min-height:76px;color:#4f665a}.suggestions button:hover{transform:translateY(-1px);box-shadow:0 5px 14px #1d3b2a08}.suggestions button span{color:#84978c}
+.redesigned-workspace .compact-composer{background:linear-gradient(transparent,#f7f8fa 18px)}.redesigned-workspace .composer{border-color:#dce5df;border-radius:15px;box-shadow:0 5px 22px #253b3007}
+.snapshot-entry{padding:17px;border:1px solid #e1e8e3;background:#fbfcfb;border-radius:13px;margin-top:12px}.snapshot-entry .history-choice{position:relative}.snapshot-entry .history-choice strong{display:block;font-size:14px;color:#385346;padding-right:80px}
+.snapshot-price{position:absolute;right:0;top:9px;font-size:12px!important;color:#547a65!important}.snapshot-preview{font-size:12px;line-height:1.65;color:#66756b;margin:8px 0}.snapshot-entry .history-choice>span:last-child{font-size:11px;color:#87948c}.snapshot-entry .text-action{font-size:11px}
+@media(max-width:600px){.center-header{padding-top:22px}.brief-headline{font-size:23px}.redesigned-workspace .brief-card{padding:20px}.interactive-price-card{grid-template-columns:1fr;padding:18px}.interactive-price-card .price-card-heading{display:block}.interactive-price-card .chart-caption{grid-column:auto}.interactive-chart{margin-top:10px}.perspective{padding:16px}.chart-caption{font-size:10px}.snapshot-entry .history-choice strong{padding-right:0}.snapshot-price{position:static;display:block;margin:5px 0}}
+@media(prefers-reduced-motion:reduce){.suggestions button:hover{transform:none}}
 .outlook-gap{font-size:13px;line-height:1.7;color:#727987}
 .investigate-outlook{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:12px}
 .stock-shortcut[data-active=true]{background:#edf1ff;border-color:#c8d2f0}

@@ -2,20 +2,20 @@
 
 ## Suggested title
 
-fix: show both outlooks and refresh research throughout the week
+feat: refine stock briefs with interactive charts and clearer updates
 
 ## Description
 
-- Keep upside and downside cards visible, clearly identifying missing evidence without asserting no upside or risk exists.
-- Add targeted investigation buttons for missing outlooks.
-- Search positive prospects as well as financial risks and require evidence-backed assessment of both sides.
-- Fetch fresh market data on explicit refresh, display a completion timestamp, and handle expired local sessions and offline-server errors.
-- Clarify that research uses a rolling window and can be regenerated any day.
+- Refine typography, spacing and card styling for an easier-to-scan stock view.
+- Add source-backed brief headlines and a dated “Since your last brief” comparison when supported.
+- Distinguish new developments from rewritten summaries or newly retrieved coverage of older events.
+- Reject explicit date contradictions in comparison notes during parsing, display and export.
+- Add daily-price exploration with pointer, touch and keyboard support; keep Yahoo Finance as a separate link.
+- Show saved prices and research previews in snapshot cards without extra AI calls.
+- Include headlines and comparison notes in Markdown exports.
 
 ## Validation
 
-- TypeScript, DeepSeek regression and investigation tests passed.
-- Tests preserve supported downside while rejecting absent, headline-only or unknown-citation upside; initial retrieval retains its two-search budget.
-- A real TE refresh on Tuesday, October 6 completed with updated market data, new source material and a new dated brief containing both outlooks.
+Production build, TypeScript, DeepSeek regression tests and snapshot integration tests passed. Comparison tests cover first briefs with no prior context, valid dated comparisons and explicit date contradictions. Snapshot tests verify recorded preview, price and currency. Browser checks include a completed live DeepSeek refresh, keyboard chart navigation and saved snapshot previews.
 
-The local server was restarted and is running on port 5173. A missing outlook is a research gap, not proof of absence; no exhaustive-research or factual-verification guarantee is made. No migration, commit or push performed.
+Existing saved briefs remain compatible; refresh to obtain headlines and comparison notes. No migration, commit or push performed.

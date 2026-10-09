@@ -1,5 +1,16 @@
 # Hindsight handoff
 
+## October 8 — visual clarity and useful refreshes
+
+The stock view now uses stronger heading hierarchy, quieter borders, green/amber outlook cards and a compact interactive price chart. Hover or tap the chart to inspect daily observations; keyboard users can focus it and use arrows/Home/End. Yahoo Finance is a separate link. All values come from stored real market observations.
+
+Prompt scannable-brief-v8 requests a short source-backed headline and a concise comparison with the previous assessment. Optional brief.headline and brief.update are validated for length and known citations referencing extracted source text; update is stored only when actual previous context exists. brief.changeSince is copied from that context's timestamp, not model output. This is an AI assessment of changes, not independent proof; it distinguishes newly retrieved coverage from genuinely new events. Existing briefs remain compatible and acquire the new fields on refresh. No extra AI call or database migration is required.
+
+Snapshot listings now return the recorded price, currency and headline (falling back to the existing takeaway) from their saved payload. Previews are rendered without AI calls. Markdown exports include the new headline and comparison note.
+
+Live verification exposed a comparison describing an explicitly older event as happening since the prior brief. lib/brief-update.ts now rejects that narrow date contradiction during parsing, rendering and export; this is not a general fact checker. Prompt instructions also distinguish older newly retrieved coverage. A subsequent live refresh completed with a no-material-change comparison. TypeScript, production build, DeepSeek regression tests and snapshot integration tests passed; browser checks covered live refresh, chart keyboard navigation and saved snapshot previews.
+
+
 ## October 6 — both outlooks and rolling refresh
 
 Both outlook headings remain visible for every saved brief. Missing or rejected upside/downside text is labelled as not established in that brief, never proof that no upside/risk exists. Investigate upside/downside starts a fresh targeted question with evidence and counterevidence; it opens an explanation rather than silently rewriting the saved brief. Historical snapshots remain read-only.

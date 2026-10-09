@@ -14,7 +14,7 @@ export async function GET(request:Request){
    return row?json({snapshot:{...row,payload:JSON.parse(row.payload)}}):json({error:'Snapshot not found'},404);
   }
   let symbol:string;try{symbol=normalizeSymbol(params.get('symbol')||'');}catch{return json({error:'Invalid ticker'},400);}
-  const rows=await database().prepare("SELECT id,symbol,name,created_at AS createdAt,json_extract(payload,'$.market.startDate') AS rangeStart,json_extract(payload,'$.market.endDate') AS rangeEnd FROM stock_snapshots WHERE user_id=? AND symbol=? ORDER BY created_at DESC").bind(user.userId,symbol).all();
+  const rows=await database().prepare("SELECT id,symbol,name,created_at AS createdAt,json_extract(payload,'$.market.startDate') AS rangeStart,json_extract(payload,'$.market.endDate') AS rangeEnd,coalesce(json_extract(payload,'$.brief.research.brief.headline'),json_extract(payload,'$.brief.research.brief.takeaway')) AS preview,json_extract(payload,'$.market.closes[#-1].close') AS price,json_extract(payload,'$.market.currency') AS currency FROM stock_snapshots WHERE user_id=? AND symbol=? ORDER BY created_at DESC").bind(user.userId,symbol).all();
   return json({snapshots:rows.results});
  }catch{return json({error:'Could not load snapshots. Apply the snapshot database migration.'},503);}
 }

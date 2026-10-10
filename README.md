@@ -1,5 +1,7 @@
 # Hindsight
 
+The interactive chart shows both the period's currency change and percentage change. Explore a day to see its price and percentage change since the start of the displayed period, using the prices already loaded.
+
 ## October 8 — visual clarity and useful refreshes
 
 The stock view now uses stronger heading hierarchy, quieter borders, green/amber outlook cards and a compact interactive price chart. Hover or tap the chart to inspect daily observations; keyboard users can focus it and use arrows/Home/End. Yahoo Finance is a separate link. All values come from stored real market observations.

@@ -2,20 +2,15 @@
 
 ## Suggested title
 
-feat: refine stock briefs with interactive charts and clearer updates
+feat: make chart price changes easier to read
 
 ## Description
 
-- Refine typography, spacing and card styling for an easier-to-scan stock view.
-- Add source-backed brief headlines and a dated “Since your last brief” comparison when supported.
-- Distinguish new developments from rewritten summaries or newly retrieved coverage of older events.
-- Reject explicit date contradictions in comparison notes during parsing, display and export.
-- Add daily-price exploration with pointer, touch and keyboard support; keep Yahoo Finance as a separate link.
-- Show saved prices and research previews in snapshot cards without extra AI calls.
-- Include headlines and comparison notes in Markdown exports.
+- Show the absolute currency change alongside the period percentage.
+- Show percentage change since the first displayed price when exploring chart dates.
+- Keep hover, touch and keyboard readouts compact and responsive.
+- Reuse loaded market data without extra API or AI calls.
 
 ## Validation
 
-Production build, TypeScript, DeepSeek regression tests and snapshot integration tests passed. Comparison tests cover first briefs with no prior context, valid dated comparisons and explicit date contradictions. Snapshot tests verify recorded preview, price and currency. Browser checks include a completed live DeepSeek refresh, keyboard chart navigation and saved snapshot previews.
-
-Existing saved briefs remain compatible; refresh to obtain headlines and comparison notes. No migration, commit or push performed.
+TypeScript and diff checks passed. Browser verification with real loaded prices confirmed 0.00% at the first observation and -5.61% at the next observation using keyboard navigation. No migration is required. No commit or push performed.

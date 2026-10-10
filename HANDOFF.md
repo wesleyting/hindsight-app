@@ -1,5 +1,9 @@
 # Hindsight handoff
 
+## October 9 — clearer price changes
+
+The price card now shows the absolute change in the stock's currency beside the period percentage. Chart hover, touch and keyboard readouts also show percentage change since the first displayed daily price. These values use existing market observations; no additional requests or AI calls are needed. Zero changes display without a misleading negative-zero sign.
+
 ## October 8 — visual clarity and useful refreshes
 
 The stock view now uses stronger heading hierarchy, quieter borders, green/amber outlook cards and a compact interactive price chart. Hover or tap the chart to inspect daily observations; keyboard users can focus it and use arrows/Home/End. Yahoo Finance is a separate link. All values come from stored real market observations.

@@ -2,15 +2,17 @@
 
 ## Suggested title
 
-feat: make chart price changes easier to read
+feat: compare snapshot price outcomes and clarify brief freshness
 
 ## Description
 
-- Show the absolute currency change alongside the period percentage.
-- Show percentage change since the first displayed price when exploring chart dates.
-- Keep hover, touch and keyboard readouts compact and responsive.
-- Reuse loaded market data without extra API or AI calls.
+- Show earlier-to-later price movement and percentage change between saved snapshots.
+- Order comparison summaries by recorded market time, regardless of selection order.
+- Avoid calculations for incompatible or insufficient observations.
+- Clarify that price movement is not an AI accuracy score or dividend-inclusive return.
+- Keep the pending freshness improvement: show research dates near brief headings and flag updated chart prices.
+- Reuse stored data without extra AI calls and add regression coverage.
 
 ## Validation
 
-TypeScript and diff checks passed. Browser verification with real loaded prices confirmed 0.00% at the first observation and -5.61% at the next observation using keyboard navigation. No migration is required. No commit or push performed.
+Production build, TypeScript, snapshot comparison tests and presentation regression tests passed. No migration, commit or push performed.

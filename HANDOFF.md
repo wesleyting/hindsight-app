@@ -1,5 +1,13 @@
 # Hindsight handoff
 
+## October 13 — snapshot price outcomes
+
+Comparing two snapshots now shows earlier price → later price and percentage movement above their saved summaries. Cards are ordered by the recorded market timestamp, not snapshot creation time or selection order. Different symbols/currencies, identical timestamps, missing observations and invalid/nonpositive values suppress the calculation. This uses saved observations only, excludes dividends, and is explicitly not an AI accuracy score. Existing uncommitted October 11 freshness changes were preserved. Tests: tests/snapshot-comparison.mjs.
+
+## October 11 — distinguish prices from research freshness
+
+The research timestamp is now near the brief heading. A quiet note prompts the user to refresh the brief when the displayed market's latest observation is later than the brief's observation, or its closing price differs on the same date. Identical re-fetches and older fallback observations do not trigger the note. Historical snapshots omit the prompt. This compares stored prices, not news freshness; it adds no fetches or AI calls. Regression coverage lives in tests/presentation.mjs.
+
 ## October 9 — clearer price changes
 
 The price card now shows the absolute change in the stock's currency beside the period percentage. Chart hover, touch and keyboard readouts also show percentage change since the first displayed daily price. These values use existing market observations; no additional requests or AI calls are needed. Zero changes display without a misleading negative-zero sign.

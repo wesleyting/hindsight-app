@@ -8,3 +8,12 @@ export function pricePeriod(start:string,end:string){
  const format=new Intl.DateTimeFormat('en-US',{month:'long',day:'numeric',...(acrossYears?{year:'numeric' as const}:{}),timeZone:'UTC'});
  return `${format.format(first)} – ${format.format(last)}`;
 }
+
+// Compare actual observations, not fetch times: fetching the same quote is not new data.
+export function pricesChangedSinceBrief(current:{closes:{date:string;close:number}[]},previous:{closes:{date:string;close:number}[]}){
+ const now=current.closes.at(-1),then=previous.closes.at(-1);
+ if(!now||!then||!Number.isFinite(now.close)||!Number.isFinite(then.close))return false;
+ const nowDate=Date.parse(now.date),thenDate=Date.parse(then.date);
+ if(!Number.isFinite(nowDate)||!Number.isFinite(thenDate))return false;
+ return nowDate>thenDate||(nowDate===thenDate&&now.close!==then.close);
+}

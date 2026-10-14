@@ -1,5 +1,9 @@
 # Hindsight
 
+Compare two saved snapshots to see the earlier and later prices, percentage movement and saved AI summaries together. The comparison uses stored data without additional AI calls; it measures price movement, not prediction accuracy or total investment return.
+
+Each brief shows when it was researched near its heading. If chart prices have advanced beyond the brief's price snapshot, a small note suggests refreshing the analysis. Refreshing prices alone does not regenerate the AI brief.
+
 The interactive chart shows both the period's currency change and percentage change. Explore a day to see its price and percentage change since the start of the displayed period, using the prices already loaded.
 
 ## October 8 — visual clarity and useful refreshes

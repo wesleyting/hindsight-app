@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {snapshotPriceChange} from '../lib/snapshot-comparison.ts';
+const market=(price,date,currency='USD')=>({symbol:'TEST',currency,priceAsOf:date,closes:[{date:date.slice(0,10),close:price}]});
+const a=market(100,'2026-10-01T20:00:00Z'),b=market(110,'2026-10-08T20:00:00Z');
+assert.equal(snapshotPriceChange(a,b).earlierIndex,0);
+assert.equal(snapshotPriceChange(b,a).earlierIndex,1);
+assert.ok(Math.abs(snapshotPriceChange(b,a).percent-10)<1e-10);
+assert.equal(snapshotPriceChange(a,market(90,b.priceAsOf)).change,-10);
+assert.equal(snapshotPriceChange(a,market(100,b.priceAsOf)).percent,0);
+assert.equal(snapshotPriceChange(a,a),null);
+assert.equal(snapshotPriceChange(a,market(110,b.priceAsOf,'CAD')),null);
+assert.equal(snapshotPriceChange(a,{...b,symbol:'OTHER'}),null);
+assert.equal(snapshotPriceChange(market(0,a.priceAsOf),b),null);
+assert.equal(snapshotPriceChange(a,{...b,priceAsOf:'invalid'}),null);
+assert.equal(snapshotPriceChange(a,{...b,closes:[]}),null);
+console.log('Passed snapshot price comparison: chronological ordering, gains, losses, unchanged prices and incompatible observations.');

@@ -232,3 +232,5 @@ body{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI"
 .snapshot-entry strong { overflow-wrap:anywhere; }
 @media(max-width:600px){.snapshot-banner{align-items:flex-start;flex-direction:column}.snapshot-comparison select{margin:8px 0;width:100%}}
 .snapshot-comparison select { margin-left:12px; max-width:100%; padding:8px; border:1px solid #d4ddec; border-radius:8px; background:white; }
+.brief-freshness{margin:0 0 14px}.brief-freshness .brief-timestamp{margin:0}.brief-price-gap{margin:7px 0 0;padding:8px 11px;border-left:2px solid #b99153;background:#faf6ee;border-radius:0 6px 6px 0;color:#795e37;font-size:12px;line-height:1.5}
+.snapshot-results{margin-top:16px}.snapshot-outcome{padding:14px 16px;background:#f4f7f5;border:1px solid #e2e9e5;border-radius:12px}.snapshot-outcome p{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;margin:5px 0;font-variant-numeric:tabular-nums}.snapshot-outcome strong{font-size:18px;font-weight:500}.snapshot-outcome p>span{font-size:16px}

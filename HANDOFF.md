@@ -1,5 +1,9 @@
 # Hindsight handoff
 
+## October 17 — reopen previous questions
+
+A collapsed Earlier questions list exposes question answers from the current stock's existing recent analyses (the existing 30-analysis window). It is hidden when empty and in historical snapshots. Selecting an answer collapses the list, reuses the single answer panel and its focus/scroll behavior, and makes no network or model call. All selected answers now show their original research timestamp. Sources and explicit Look deeper remain available. No storage changes or migrations.
+
 ## October 13 — snapshot price outcomes
 
 Comparing two snapshots now shows earlier price → later price and percentage movement above their saved summaries. Cards are ordered by the recorded market timestamp, not snapshot creation time or selection order. Different symbols/currencies, identical timestamps, missing observations and invalid/nonpositive values suppress the calculation. This uses saved observations only, excludes dividends, and is explicitly not an AI accuracy score. Existing uncommitted October 11 freshness changes were preserved. Tests: tests/snapshot-comparison.mjs.

@@ -1,5 +1,7 @@
 # Hindsight
 
+Use **Earlier questions** to reopen answers from a stock's recent research without another AI call. The list stays collapsed until needed; answers retain their research date and sources. It uses the existing recent 30-analysis window rather than a complete archive.
+
 Compare two saved snapshots to see the earlier and later prices, percentage movement and saved AI summaries together. The comparison uses stored data without additional AI calls; it measures price movement, not prediction accuracy or total investment return.
 
 Each brief shows when it was researched near its heading. If chart prices have advanced beyond the brief's price snapshot, a small note suggests refreshing the analysis. Refreshing prices alone does not regenerate the AI brief.

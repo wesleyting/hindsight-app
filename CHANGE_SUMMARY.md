@@ -2,17 +2,16 @@
 
 ## Suggested title
 
-feat: compare snapshot price outcomes and clarify brief freshness
+feat: reopen recent stock questions without repeat research
 
 ## Description
 
-- Show earlier-to-later price movement and percentage change between saved snapshots.
-- Order comparison summaries by recorded market time, regardless of selection order.
-- Avoid calculations for incompatible or insufficient observations.
-- Clarify that price movement is not an AI accuracy score or dividend-inclusive return.
-- Keep the pending freshness improvement: show research dates near brief headings and flag updated chart prices.
-- Reuse stored data without extra AI calls and add regression coverage.
+- Add a collapsed Earlier questions list for each stock.
+- Reopen saved answers in the existing answer panel with focus and scrolling.
+- Display the original research date alongside answers and preserve source access.
+- Hide the list when empty or viewing historical snapshots.
+- Reuse the existing recent analysis data without extra network or AI calls.
 
 ## Validation
 
-Production build, TypeScript, snapshot comparison tests and presentation regression tests passed. No migration, commit or push performed.
+Production build, TypeScript and diff checks passed. No migrations, commits or pushes performed.

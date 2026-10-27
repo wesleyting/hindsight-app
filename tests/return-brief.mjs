@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {returnWatchDates,returnBriefQuestion} from '../lib/return-brief.ts';
+const events=[{date:'2026-10-26',title:'Earnings',status:'estimated'},{date:'2026-10-27',title:'Update',status:'reported'},{date:'2026-11-01',title:'Launch',status:'estimated'},{date:'invalid',title:'Bad',status:'reported'}];
+const result=returnWatchDates(events,'2026-10-27');
+assert.deepEqual(result.map(e=>e.state),['today','passed','upcoming']);
+assert.equal(result[1].status,'estimated');
+assert.equal(result[1].title,'Earnings');
+assert.deepEqual(returnWatchDates(events,''),[]);
+assert.deepEqual(returnWatchDates([],'2026-10-27'),[]);
+assert.equal(returnWatchDates([...events,...events],'2026-10-27').length,3);
+const prompt=returnBriefQuestion('Example Company','TEST','2026-10-01T20:00:00Z');
+assert.match(prompt,/2026-10-01T20:00:00Z/);
+assert.match(prompt,/passed date alone is not evidence/);
+assert.match(prompt,/coverage is incomplete/);
+assert.ok(prompt.length<1500);
+console.log('Passed returning-user watch-date and research prompt checks.');

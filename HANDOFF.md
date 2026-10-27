@@ -1,5 +1,9 @@
 # Hindsight handoff
 
+## October 27 — a useful return visit
+
+A Since your last brief card compares the latest loaded price with the market observation saved in the last brief. It appears when there are newer comparable prices or a saved watch date has arrived/passed. It shows up to three watch dates nearest today (UTC), clearly separates passed/today/upcoming, and preserves estimated labels. Dates are reminders to verify, never claims of outcomes. Research what changed explicitly starts fresh question research since the prior brief's timestamp, requests three plain-language bullets and opens the existing answer panel. It does not overwrite the brief; Refresh brief still does that. The card replaces the smaller price-freshness warning, is hidden in snapshots, and makes no AI call until clicked. No visit tracking, background monitoring or migration. Checks: tests/return-brief.mjs and existing snapshot-comparison tests.
+
 ## October 17 — reopen previous questions
 
 A collapsed Earlier questions list exposes question answers from the current stock's existing recent analyses (the existing 30-analysis window). It is hidden when empty and in historical snapshots. Selecting an answer collapses the list, reuses the single answer panel and its focus/scroll behavior, and makes no network or model call. All selected answers now show their original research timestamp. Sources and explicit Look deeper remain available. No storage changes or migrations.

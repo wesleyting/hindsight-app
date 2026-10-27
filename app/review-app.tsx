@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowUp, RefreshCw, X, History, Download, ArrowUpRight, TrendingUp, ShieldAlert, CalendarDays, BookOpen, Search, Sparkles } from 'lucide-react';
 import { snapshotPriceChange } from '@/lib/snapshot-comparison';
 import { validBriefUpdate } from '@/lib/brief-update';
+import { ReturnBrief } from './return-brief';
+import { returnBriefQuestion } from '@/lib/return-brief';
 import { PriceChart } from './price-chart';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,7 +12,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '
 import type { ResearchView, SavedAnalysis } from '@/lib/research-types';
 import type { MarketSnapshot } from '@/lib/market';
 import type { StockSnapshot, SnapshotSummary } from '@/lib/snapshot-types';
-import { citationsAfterPunctuation,pricePeriod,pricesChangedSinceBrief } from '@/lib/presentation';
+import { citationsAfterPunctuation,pricePeriod } from '@/lib/presentation';
 const date=(value:string)=>new Date(value).toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'});
 const percent=(value:number)=>`${value>=0?'+':''}${value.toFixed(2)}%`;
 type SelectedAnswer={analysis:SavedAnalysis;title:string;answer:string};
@@ -128,9 +130,10 @@ export default function ReviewApp(){
  {snapshot&&<div className="snapshot-banner"><div><strong>{snapshot.name}</strong><span>Price window: {pricePeriod(snapshot.payload.market.startDate,snapshot.payload.market.endDate)} · Historical view</span></div><Button variant="outline" onClick={returnToLatest}>Back to latest</Button></div>}
  {snapshot&&snapshots.length>1&&<div className="snapshot-comparison"><label htmlFor="compare-snapshot">Compare with</label><select id="compare-snapshot" disabled={snapshotBusy} value={comparison?.id??''} onChange={e=>void compareSnapshot(e.target.value)}><option value="">Choose another snapshot</option>{snapshots.filter(item=>item.id!==snapshot.id).map(item=><option key={item.id} value={item.id}>{item.name}</option>)}</select>{comparison&&<SnapshotComparison first={snapshot} second={comparison}/>}</div>}
  <section className="stock-overview"><div className="stock-heading"><h1>{view!.market.symbol} <span>{view!.market.company}</span></h1><Button variant="ghost" size="icon" aria-label="Refresh prices" disabled={busy||!!snapshot} onClick={()=>void openStock(view!.market.symbol,true)}><RefreshCw size={16}/></Button></div><PriceChart key={view!.market.symbol+view!.market.fetchedAt} market={view!.market}/>{view!.market.warnings.filter(w=>w.startsWith('Refresh failed')||w.startsWith('Price data is more')).map(w=><p className="notice" key={w}>{w}</p>)}</section>
+ {!snapshot&&latest&&<ReturnBrief market={view.market} brief={latest} disabled={busy||!configured} onResearch={()=>void ask('question',returnBriefQuestion(view.market.company,view.market.symbol,latest.createdAt),true,'What changed since my last brief?')}/>}
  <section className="brief-card"><div className="section-heading"><h2><Sparkles size={17}/>The short version</h2><Button variant="outline" disabled={busy||!configured||!!snapshot} onClick={()=>void ask('catchup')}><RefreshCw size={14} className={busyKind==='catchup'?'animate-spin motion-reduce:animate-none':undefined}/>{busyKind==='catchup'?'Researching…':latest?'Refresh brief':'Create brief'}</Button></div>
  <p className="brief-refresh-status" role="status">{busyKind==='catchup'?'Checking fresh sources and updating this brief…':briefStatus}</p>
- {latest&&<div className="brief-freshness"><p className="brief-timestamp">Researched <time dateTime={latest.createdAt}>{date(latest.createdAt)}</time></p>{!snapshot&&pricesChangedSinceBrief(view.market,latest.market)&&<p className="brief-price-gap">The chart has updated prices. Refresh brief to include them in the analysis.</p>}</div>}
+ {latest&&<div className="brief-freshness"><p className="brief-timestamp">Researched <time dateTime={latest.createdAt}>{date(latest.createdAt)}</time></p></div>}
  {latest?<>{latest.research?.brief?.headline&&<h2 className="brief-headline">{latest.research.brief.headline.replace(/\[(?:P|[NSC]\d+)\]/g,'').trim()}</h2>}<div className="plain-brief"><Answer analysis={{...latest,answer:latest.research?.brief?.takeaway??latest.answer}}/></div>
  <div className="brief-actions">{latest.research?.brief&&<button className="read-more" aria-expanded={expanded} onClick={()=>{if(!expanded)scrollRequest.current='detail';setExpanded(value=>!value);}}>{expanded?'Read less':'Read more'}<ArrowUpRight size={13}/></button>}<button className="text-action" onClick={()=>showSources(latest)}><BookOpen size={13}/>Sources</button></div>
  {expanded&&latest.research?.brief&&<div className="inline-detail" ref={detailRef} tabIndex={-1}><Answer analysis={latest}/></div>}
